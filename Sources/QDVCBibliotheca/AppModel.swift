@@ -93,6 +93,51 @@ struct OutletRow: Identifiable, Hashable {
     var starRank: Int { starred ? 0 : 1 }
 }
 
+/// Sidebar filters of the Authors tab.
+enum AuthorFilter: Hashable {
+    case all, starred
+}
+
+/// Sidebar filters of the Outlets tab.
+enum OutletFilter: Hashable {
+    case all, starred, nicknamed, notNicknamed, noJflags
+    case jflag(String)
+}
+
+/// A record as listed in the Authors/Outlets detail panes.
+struct RecordSummary: Identifiable, Hashable {
+    let id: String
+    let title: String
+    let year: String
+}
+
+/// A J-Flag in use, for the Outlets sidebar.
+struct JFlagCount: Identifiable, Hashable {
+    var id: String { flag }
+    let flag: String
+    let count: Int
+}
+
+extension OutletFilter {
+    func includes(_ o: Outlet) -> Bool {
+        switch self {
+        case .all: return true
+        case .starred: return o.starred
+        case .nicknamed: return !o.nickname.isEmpty
+        case .notNicknamed: return o.nickname.isEmpty
+        case .noJflags: return o.jflags.isEmpty
+        case .jflag(let flag): return o.jflags.contains(flag)
+        }
+    }
+}
+
+/// One entry in the DOI Lookup tab's history (this session only).
+struct DOIHistoryItem: Identifiable, Hashable {
+    var id: String { doi }
+    let doi: String
+    let foundID: String?
+}
+
 enum DOILookupOutcome: Equatable {
     case found(String)
     case notFound(String)
@@ -144,14 +189,14 @@ final class AppModel {
 
     // Authors tab
     var authorSearchText = ""
-    var authorsStarredOnly = false
+    var authorFilter: AuthorFilter? = .all
     var authorSortOrder: [KeyPathComparator<AuthorRow>] = [KeyPathComparator(\AuthorRow.name)]
     private(set) var authorRows: [AuthorRow] = []
     var selectedAuthorID: String?
 
     // Outlets tab
     var outletSearchText = ""
-    var outletsStarredOnly = false
+    var outletFilter: OutletFilter? = .all
     var outletSortOrder: [KeyPathComparator<OutletRow>] = [KeyPathComparator(\OutletRow.name)]
     private(set) var outletRows: [OutletRow] = []
     var selectedOutletID: String?
@@ -159,6 +204,9 @@ final class AppModel {
     // DOI Lookup tab
     var doiQuery = ""
     private(set) var doiOutcome: DOILookupOutcome?
+    private(set) var doiHistory: [DOIHistoryItem] = []
+    var selectedHistoryDOI: String?
+    var doiHistorySearchText = ""
 
     /// A short-lived message shown in the window subtitle.
     private(set) var statusMessage: String?
@@ -303,6 +351,10 @@ final class AppModel {
             selectedAuthorID = nil
             selectedOutletID = nil
             doiOutcome = nil
+            doiHistory = []
+            selectedHistoryDOI = nil
+            authorFilter = .all
+            outletFilter = .all
         }
         refreshSidebar()
         refreshRows()
@@ -828,7 +880,7 @@ final class AppModel {
         guard let outletID, workspace?.outlets[outletID] != nil else { return }
         currentTab = .outlets
         outletSearchText = ""
-        outletsStarredOnly = false
+        outletFilter = .all
         refreshOutletRows()
         selectedOutletID = outletID
     }
@@ -844,7 +896,7 @@ final class AppModel {
         var built = ws.allAuthors().map {
             AuthorRow(id: $0.authorID, name: $0.displayName, starred: $0.starred, count: $0.recordIDs.count)
         }
-        if authorsStarredOnly { built = built.filter(\.starred) }
+        if authorFilter == .starred { built = built.filter(\.starred) }
         if !needle.isEmpty {
             built = built.filter {
                 $0.name.localizedCaseInsensitiveContains(needle) || $0.id.localizedCaseInsensitiveContains(needle)
@@ -874,13 +926,13 @@ final class AppModel {
         }
         let priority = Prefs.jflagPriority()
         let needle = outletSearchText.trimmed
-        var built = ws.allOutlets().map { o -> OutletRow in
+        let filter = outletFilter ?? .all
+        var built = ws.allOutlets().filter { filter.includes($0) }.map { o -> OutletRow in
             let flags = CatalogueSupport.orderJflags(o.sortedJflags(), priority: priority)
             return OutletRow(id: o.outletID, name: o.name, nickname: o.nickname,
                              jflags: flags.joined(separator: ", "), starred: o.starred,
                              count: o.recordIDs.count)
         }
-        if outletsStarredOnly { built = built.filter(\.starred) }
         if !needle.isEmpty {
             built = built.filter {
                 $0.name.localizedCaseInsensitiveContains(needle)
@@ -943,20 +995,84 @@ final class AppModel {
 
     // MARK: - DOI Lookup tab
 
-    /// Look the DOI up and, like the GTK app, jump straight to the record.
-    func lookupDOI() {
+    /// Look the DOI up and show the outcome in the DOI Lookup tab's detail
+    /// pane (the GTK app jumps to the Catalogue instead; here the result has
+    /// its own pane, with Show in Catalogue one click away).
+    func lookupDOI(movingToTop: Bool = true) {
         let raw = doiQuery.trimmed
         guard !raw.isEmpty else {
             doiOutcome = .empty
             return
         }
         guard let ws = workspace else { return }
-        if let id = ws.lookupDOI(raw) {
-            doiOutcome = .found(id)
-            revealRecord(id)
+        let doi = Naming.normaliseDOI(raw)
+        let found = ws.lookupDOI(raw)
+        doiOutcome = found.map { .found($0) } ?? .notFound(doi)
+        let item = DOIHistoryItem(doi: doi, foundID: found)
+        if !movingToTop, let index = doiHistory.firstIndex(where: { $0.doi == doi }) {
+            doiHistory[index] = item
         } else {
-            doiOutcome = .notFound(Naming.normaliseDOI(raw))
+            doiHistory.removeAll { $0.doi.lowercased() == doi.lowercased() }
+            doiHistory.insert(item, at: 0)
+            if doiHistory.count > 30 { doiHistory.removeLast(doiHistory.count - 30) }
         }
+        selectedHistoryDOI = doi
+    }
+
+    /// Show a history entry again (re-checking it, since the library may
+    /// have changed since).
+    func historySelectionChanged() {
+        guard let doi = selectedHistoryDOI else { return }
+        if Naming.normaliseDOI(doiQuery.trimmed) != doi || doiOutcome == nil {
+            doiQuery = doi
+            lookupDOI(movingToTop: false)
+        }
+    }
+
+    var filteredDOIHistory: [DOIHistoryItem] {
+        let needle = doiHistorySearchText.trimmed
+        guard !needle.isEmpty else { return doiHistory }
+        return doiHistory.filter {
+            $0.doi.localizedCaseInsensitiveContains(needle)
+                || ($0.foundID ?? "").localizedCaseInsensitiveContains(needle)
+        }
+    }
+
+    // MARK: - Detail-pane helpers for the Authors and Outlets tabs
+
+    /// (id, title, year) for records, in the order given, skipping unknown ids.
+    func recordSummaries(_ ids: [String]) -> [RecordSummary] {
+        guard let ws = workspace else { return [] }
+        return ids.compactMap { id in
+            ws.record(id).map { RecordSummary(id: $0.bibliothecaID, title: $0.title, year: $0.year) }
+        }
+    }
+
+    /// J-Flags in use across all outlets, in display order, with counts.
+    func jflagsInUse() -> [JFlagCount] {
+        _ = outletRows
+        guard let ws = workspace else { return [] }
+        var counts: [String: Int] = [:]
+        for o in ws.outlets.values {
+            for f in o.sortedJflags() { counts[f, default: 0] += 1 }
+        }
+        let ordered = CatalogueSupport.orderJflags(Array(counts.keys), priority: Prefs.jflagPriority())
+        return ordered.map { JFlagCount(flag: $0, count: counts[$0] ?? 0) }
+    }
+
+    /// (All authors, starred authors) for the Authors sidebar. Reads
+    /// `authorRows` so views showing it refresh after any author change.
+    var authorCounts: (all: Int, starred: Int) {
+        _ = authorRows
+        guard let ws = workspace else { return (0, 0) }
+        return (ws.authors.count, ws.authors.values.filter(\.starred).count)
+    }
+
+    /// Reads `outletRows` so views showing it refresh after any outlet change.
+    func outletCount(_ filter: OutletFilter) -> Int {
+        _ = outletRows
+        guard let ws = workspace else { return 0 }
+        return ws.outlets.values.filter { filter.includes($0) }.count
     }
 
     // MARK: - My Works

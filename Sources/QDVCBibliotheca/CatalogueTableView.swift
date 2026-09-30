@@ -103,6 +103,7 @@ struct CatalogueTableView: View {
             model.primaryAction(ids)
         }
         .onChange(of: model.sortOrder) { model.refreshRows() }
+        .onChange(of: model.searchText) { model.refreshRows() }
         .onChange(of: model.selectedID) { model.selectionChanged() }
         .overlay {
             if model.rows.isEmpty && !model.isLoading {

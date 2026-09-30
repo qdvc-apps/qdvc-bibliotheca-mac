@@ -97,8 +97,8 @@ handed to the main actor, never shared concurrently.
 | --- | --- |
 | `BibliothecaApp.swift` | `@main` app, single `Window` scene, app delegate |
 | `Commands.swift` | menu-bar commands and shortcuts |
-| `ContentView.swift` | tab switching (toolbar segmented control), `CatalogueView` split view, the one sheet host, welcome screen |
-| `AuthorsView.swift`, `OutletsView.swift`, `DOILookupView.swift` | the Authors, Outlets and DOI Lookup tabs |
+| `ContentView.swift` | tab switching (toolbar segmented control), `MainSplitView` (the one split view and search field for all tabs), the one sheet host, welcome screen |
+| `AuthorsView.swift`, `OutletsView.swift`, `DOILookupView.swift` | the Authors, Outlets and DOI Lookup tabs: sidebar, list and detail pane of each; `RecordList` and `StarButton` |
 | `Sheets.swift` | Allocate, New Work, Rename, Nickname and J-Flags sheets |
 | `SidebarView.swift` | library filters with count badges |
 | `CatalogueTableView.swift` | the records `Table`, `CatalogueRow`, record context menu |
@@ -151,6 +151,14 @@ pattern for future record mutations.
     text inside a column. SwiftUI measures minimum sizes at near-zero widths,
     where such text is thousands of points tall. Use `.layoutPriority` to
     favour text over a flexible neighbour instead (as `DetailView` does).
+- **One split view for every tab.** `MainSplitView` is a single
+  `NavigationSplitView` whose three columns switch content with the tab. Do not
+  give a tab its own layout without a sidebar, or its own split view: the
+  toolbar centres the tab control over the area beside the sidebar, so the
+  control jumps whenever the sidebar appears or disappears. The HIG treats
+  the sidebar as persistent window structure that people hide themselves
+  (View → Hide Sidebar). The search field is attached once, too, and routes to
+  the current tab's filter text.
 - **One sheet at a time.** Every sheet is a case of `ActiveSheet`, presented
   by a single `.sheet(item: $model.activeSheet)` in `ContentView`. Sheets only
   collect input; the `AppModel` method that applies the change also closes
@@ -188,6 +196,8 @@ pattern for future record mutations.
 - **Author de-duplication.** A record counts once per author even when the
   name is listed twice. The Python edition (as of the port) counts it twice,
   because of a bug in its `_derive_authors`.
+- **DOI Lookup** shows its result in the tab's detail pane instead of jumping
+  to the Catalogue as the GTK app does; Show in Catalogue is one click away.
 - **Preferences** live in `UserDefaults` (keys in `Prefs.Key`), not in the
   Python YAML config.
 

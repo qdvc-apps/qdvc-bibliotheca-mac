@@ -19,7 +19,9 @@ use this one.
 
 The window has four tabs, switched with the segmented control in the toolbar
 (⌘1–⌘4), as in Activity Monitor: **Catalogue**, **Authors**, **Outlets** and
-**DOI Lookup**.
+**DOI Lookup**. Every tab has the same three panes (sidebar, list, details),
+so the window keeps its shape as you switch, and View → Hide Sidebar applies
+to all of them.
 
 - Catalogue — a three-column view: library filters (all records, by type, by full-text
   availability, by DOI status, My Works, starred authors and outlets) with
@@ -44,12 +46,16 @@ The window has four tabs, switched with the segmented control in the toolbar
   rename a record's Bibliotheca ID (F2). Renaming moves its `.bib` and `.md`
   and updates every work that cites it, and suggests an ID ending in the
   outlet's nickname.
-- Authors — every author derived from your BibTeX, with starring (starred
-  authors become sidebar filters) and Show Works in Catalogue.
-- Outlets — journals and proceedings with starring, nicknames and J-Flags.
-  J-Flag presets and their display order are set in Settings → J-Flags.
-- DOI Lookup — check whether a DOI is already in the library and jump to the
-  record.
+- Authors — every author derived from your BibTeX, filtered in the sidebar
+  (all or starred), with the selected author's works in the detail pane.
+  Starring an author adds it to the Catalogue sidebar.
+- Outlets — journals and proceedings, filtered in the sidebar (starred, with or
+  without a nickname, or by J-Flag), with nickname, J-Flags and records in the
+  detail pane. J-Flag presets and their display order are set in
+  Settings → J-Flags.
+- DOI Lookup — check whether a DOI is already in the library; the result
+  (with Show in Catalogue) appears in the detail pane, and the session's
+  lookups are listed in the sidebar.
 - Refresh (⌘R) only re-reads files that changed on disk, so edits made in a
   text editor, by a sync client or on another machine appear quickly.
 

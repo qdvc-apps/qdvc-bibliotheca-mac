@@ -4,9 +4,11 @@ import QuickLook
 import SwiftUI
 
 /// The main window. Like Activity Monitor, a segmented control centred in the
-/// toolbar switches between the Catalogue (a three-column split view) and the
-/// full-width Authors, Outlets and DOI Lookup tabs. The welcome screen shows
-/// when no workspace is open.
+/// toolbar switches between the Catalogue, Authors, Outlets and DOI Lookup
+/// tabs. Every tab shares one three-column split view (sidebar | list |
+/// detail), so the sidebar, the toolbar and the tab control never move; only
+/// the panes' contents change. The welcome screen shows when no workspace is
+/// open.
 struct ContentView: View {
     @Environment(AppModel.self) private var model
 
@@ -16,14 +18,7 @@ struct ContentView: View {
             if model.workspace == nil && !model.isLoading {
                 WelcomeView()
             } else {
-                Group {
-                    switch model.currentTab {
-                    case .catalogue: CatalogueView()
-                    case .authors: AuthorsView()
-                    case .outlets: OutletsView()
-                    case .doiLookup: DOILookupView()
-                    }
-                }
+                MainSplitView()
                 .dropDestination(for: URL.self) { urls, _ in
                     model.beginImport(files: urls)
                 }
@@ -89,23 +84,74 @@ struct ContentView: View {
     }
 }
 
-/// The Catalogue tab: filters | records | detail.
-struct CatalogueView: View {
+/// The one split view behind every tab. Keeping a single instance (rather than
+/// one per tab) is what keeps the sidebar width, the toolbar layout and the
+/// centred tab control stable when switching tabs, as the HIG expects of a
+/// sidebar: a persistent list of the app's areas, hidden only by the user.
+struct MainSplitView: View {
     @Environment(AppModel.self) private var model
 
     var body: some View {
-        @Bindable var model = model
         NavigationSplitView {
-            SidebarView()
-                .navigationSplitViewColumnWidth(min: 180, ideal: 220, max: 320)
+            Group {
+                switch model.currentTab {
+                case .catalogue: SidebarView()
+                case .authors: AuthorsSidebar()
+                case .outlets: OutletsSidebar()
+                case .doiLookup: DOIHistorySidebar()
+                }
+            }
+            .navigationSplitViewColumnWidth(min: 180, ideal: 220, max: 320)
         } content: {
-            CatalogueTableView()
-                .navigationSplitViewColumnWidth(min: 420, ideal: 700)
+            Group {
+                switch model.currentTab {
+                case .catalogue: CatalogueTableView()
+                case .authors: AuthorsView()
+                case .outlets: OutletsView()
+                case .doiLookup: DOILookupView()
+                }
+            }
+            .navigationSplitViewColumnWidth(min: 420, ideal: 700)
         } detail: {
-            DetailView()
+            switch model.currentTab {
+            case .catalogue: DetailView()
+            case .authors: AuthorDetailView()
+            case .outlets: OutletDetailView()
+            case .doiLookup: DOIResultView()
+            }
         }
-        .searchable(text: $model.searchText, placement: .toolbar, prompt: "Filter records")
-        .onChange(of: model.searchText) { model.refreshRows() }
+        // One search field for all tabs (so the toolbar never changes shape);
+        // it filters whatever the current tab lists.
+        .searchable(text: searchText, placement: .toolbar, prompt: Text(searchPrompt))
+    }
+
+    private var searchText: Binding<String> {
+        Binding(
+            get: {
+                switch model.currentTab {
+                case .catalogue: return model.searchText
+                case .authors: return model.authorSearchText
+                case .outlets: return model.outletSearchText
+                case .doiLookup: return model.doiHistorySearchText
+                }
+            },
+            set: { text in
+                switch model.currentTab {
+                case .catalogue: model.searchText = text
+                case .authors: model.authorSearchText = text
+                case .outlets: model.outletSearchText = text
+                case .doiLookup: model.doiHistorySearchText = text
+                }
+            })
+    }
+
+    private var searchPrompt: String {
+        switch model.currentTab {
+        case .catalogue: return "Filter records"
+        case .authors: return "Filter authors"
+        case .outlets: return "Filter outlets"
+        case .doiLookup: return "Filter recent lookups"
+        }
     }
 }
 
