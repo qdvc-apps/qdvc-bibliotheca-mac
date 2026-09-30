@@ -16,7 +16,14 @@ struct NotesEditor: NSViewRepresentable {
     func makeNSView(context: Context) -> NSScrollView {
         let scrollView = NSTextView.scrollableTextView()
         scrollView.hasVerticalScroller = true
+        scrollView.hasHorizontalScroller = false
         scrollView.drawsBackground = true
+        // Never let AppKit's idea of the scroll view's size push back on the
+        // SwiftUI layout (see sizeThatFits below).
+        for orientation in [NSLayoutConstraint.Orientation.horizontal, .vertical] {
+            scrollView.setContentHuggingPriority(.defaultLow, for: orientation)
+            scrollView.setContentCompressionResistancePriority(.defaultLow, for: orientation)
+        }
         if let textView = scrollView.documentView as? NSTextView {
             textView.delegate = context.coordinator
             textView.isRichText = false
@@ -33,6 +40,15 @@ struct NotesEditor: NSViewRepresentable {
             context.coordinator.show(text, documentID: documentID, fontSize: fontSize)
         }
         return scrollView
+    }
+
+    /// Take exactly the space SwiftUI offers. Without this, SwiftUI falls back
+    /// to the scroll view's AppKit fitting size, which can be arbitrarily
+    /// large: the detail column then grows taller than the window, its content
+    /// is laid out off-screen, and the other columns stop scrolling properly.
+    func sizeThatFits(_ proposal: ProposedViewSize, nsView: NSScrollView,
+                      context: Context) -> CGSize? {
+        proposal.replacingUnspecifiedDimensions(by: CGSize(width: 320, height: 200))
     }
 
     func updateNSView(_ nsView: NSScrollView, context: Context) {

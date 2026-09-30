@@ -83,10 +83,12 @@ struct DetailView: View {
                             fontSize: notesFontSize) { newText in
                     model.notesEdited(newText)
                 }
-                .frame(minHeight: 160)
+                .frame(maxWidth: .infinity, minHeight: 160, maxHeight: .infinity)
+                .layoutPriority(1)
                 .overlay(RoundedRectangle(cornerRadius: 4).stroke(.separator))
             }
             .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         } else {
             ContentUnavailableView("No Record Selected", systemImage: "text.book.closed",
                                    description: Text("Select a record to see its reference and notes."))

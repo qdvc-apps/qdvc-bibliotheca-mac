@@ -22,7 +22,6 @@ struct ContentView: View {
                         .navigationSplitViewColumnWidth(min: 420, ideal: 700)
                 } detail: {
                     DetailView()
-                        .navigationSplitViewColumnWidth(min: 320, ideal: 420)
                 }
                 .searchable(text: $model.searchText, placement: .toolbar, prompt: "Filter")
                 .onChange(of: model.searchText) { model.refreshRows() }

@@ -36,6 +36,11 @@ The `.app` bundle is assembled by `scripts/build-app.sh` from the SwiftPM
 release binary and `Resources/Info.plist`. To add an app icon, drop an
 `AppIcon.icns` into `Resources/`; the script picks it up.
 
+`Package.resolved` is committed. It pins the exact dependency versions (only
+Yams today) so every checkout and every CI run builds the same code. Update it
+deliberately with `swift package update`, then commit the result together with
+any code changes it needs.
+
 The package uses Swift language mode 5 (tools version 5.10), so strict
 concurrency checking is off. The UI types are `@MainActor`; `Workspace` is
 marked `@unchecked Sendable` because it is built on a background task and then
@@ -107,6 +112,12 @@ pattern for future record mutations.
   record switch, before refresh/close, when the app resigns active, and on
   quit. When the app becomes active again, the current note is re-read if it
   has no unsaved edits, so edits made in another editor show up.
+- **AppKit views must size themselves explicitly.** Every
+  `NSViewRepresentable` implements `sizeThatFits(_:nsView:context:)` and
+  returns the proposed size (as `NotesEditor` does). Otherwise SwiftUI falls
+  back to the AppKit fitting size, which for scroll views can be huge. The
+  split view then grows taller than the window, the detail pane renders
+  off-screen (blank), and the other columns stop scrolling properly.
 - **Load-bearing strings.** The type labels (`Builtin.typeLabels`) and the
   citation-style ids (`__apa__`, `__acis__`) keep the same values as in the
   Python edition.
