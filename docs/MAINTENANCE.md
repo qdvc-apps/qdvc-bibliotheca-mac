@@ -24,7 +24,10 @@ of the parity fixtures (§5).
   Tests/BibliothecaCoreTests/   XCTest: parity + workspace tests
     Fixtures/parity.json        committed reference outputs (see §5)
   tools/make_fixtures.py        optional: regenerates parity.json (see §5)
+  tools/make_icon.py            regenerates the app icon (see §1.1)
   Resources/Info.plist          bundle metadata used by scripts/build-app.sh
+  Resources/AppIcon.svg         the icon's vector master (generated)
+  Resources/AppIcon.icns        the icon, all sizes (generated)
   scripts/build-app.sh          builds and ad-hoc signs the .app
   docs/FILE_FORMAT.md           the workspace format specification
   .github/workflows/ci.yml      build + test on a GitHub macOS runner
@@ -33,8 +36,30 @@ of the parity fixtures (§5).
 There is deliberately no `.xcodeproj`: Xcode opens `Package.swift` directly,
 and a hand-maintained project file would be one more thing to keep in sync.
 The `.app` bundle is assembled by `scripts/build-app.sh` from the SwiftPM
-release binary and `Resources/Info.plist`. To add an app icon, drop an
-`AppIcon.icns` into `Resources/`; the script picks it up.
+release binary, `Resources/Info.plist` and `Resources/AppIcon.icns`.
+
+### 1.1 App icon
+
+The icon is a shelf of frosted-glass books in the macOS 26 Liquid Glass style
+(violet "Dusk" palette). `tools/make_icon.py` draws it as SVG and writes
+`Resources/AppIcon.svg` and `Resources/AppIcon.icns`; both are committed, so
+building needs nothing extra. To change the design or palette, edit the
+constants at the top of the script and run `python3 tools/make_icon.py`
+(needs `rsvg-convert`: `brew install librsvg`). Every size in the `.icns` is
+rendered from the vector, not scaled down, so small sizes stay sharp.
+
+The geometry follows Apple's macOS icon template: an 824 × 824 tile centred
+on a 1024 × 1024 canvas (100 px transparent margin), with a 185.4 px corner,
+and a black drop shadow (28 px blur, 12 px down, 50 %). The corner uses
+Apple's *continuous-curvature* rounded rectangle: the curve UIKit draws, as
+reverse-engineered and published by PaintCode. It is not a superellipse; a
+whole-shape superellipse looks slightly too round, because it starts curving
+before Apple's corner does. macOS applies no mask to Mac app icons, so the
+shape, margin and shadow must be baked into the artwork, as the script does.
+
+If Finder or the Dock keeps showing an old icon after a rebuild, that's the
+system icon cache; re-copying the app (for example
+`scripts/build-app.sh --install`) usually refreshes it.
 
 `Package.resolved` is committed. It pins the exact dependency versions (only
 Yams today) so every checkout and every CI run builds the same code. Update it
@@ -241,4 +266,4 @@ ready*; they need UI.
 7. **CSL styles**: render with citeproc-js inside `JavaScriptCore` (bundled as
    a resource), listing the workspace's `csl/` files in the style picker. Until then, a stored CSL style id falls back to APA.
 8. **Live refresh** with FSEvents (the incremental cache makes a reload after
-   each change cheap), and an app icon.
+   each change cheap).

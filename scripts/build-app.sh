@@ -38,10 +38,8 @@ mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$bin_dir/QDVCBibliotheca" "$app/Contents/MacOS/QDVCBibliotheca"
 cp Resources/Info.plist "$app/Contents/Info.plist"
 printf 'APPL????' > "$app/Contents/PkgInfo"
-if [[ -f Resources/AppIcon.icns ]]; then
-    cp Resources/AppIcon.icns "$app/Contents/Resources/AppIcon.icns"
-    /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon" "$app/Contents/Info.plist"
-fi
+# App icon (regenerate with tools/make_icon.py; Info.plist names it AppIcon).
+cp Resources/AppIcon.icns "$app/Contents/Resources/AppIcon.icns"
 
 echo "==> Ad-hoc signing"
 codesign --force --sign - --timestamp=none "$app"
