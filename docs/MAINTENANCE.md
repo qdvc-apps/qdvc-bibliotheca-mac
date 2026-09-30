@@ -112,12 +112,17 @@ pattern for future record mutations.
   record switch, before refresh/close, when the app resigns active, and on
   quit. When the app becomes active again, the current note is re-read if it
   has no unsaved edits, so edits made in another editor show up.
-- **AppKit views must size themselves explicitly.** Every
-  `NSViewRepresentable` implements `sizeThatFits(_:nsView:context:)` and
-  returns the proposed size (as `NotesEditor` does). Otherwise SwiftUI falls
-  back to the AppKit fitting size, which for scroll views can be huge. The
-  split view then grows taller than the window, the detail pane renders
-  off-screen (blank), and the other columns stop scrolling properly.
+- **Nothing in a column may demand a large minimum size.** If any view's
+  minimum height exceeds the window, the whole split view is laid out taller
+  than the window and shown from its middle. The detail pane then looks blank
+  and the sidebar and table look scrolled ("paged down"). Two rules follow:
+  - Every `NSViewRepresentable` implements `sizeThatFits(_:nsView:context:)`
+    and returns the proposed size (as `NotesEditor` does). Otherwise SwiftUI
+    falls back to the AppKit fitting size, which for scroll views can be huge.
+  - Never put `.fixedSize(horizontal: false, vertical: true)` on wrapping
+    text inside a column. SwiftUI measures minimum sizes at near-zero widths,
+    where such text is thousands of points tall. Use `.layoutPriority` to
+    favour text over a flexible neighbour instead (as `DetailView` does).
 - **Load-bearing strings.** The type labels (`Builtin.typeLabels`) and the
   citation-style ids (`__apa__`, `__acis__`) keep the same values as in the
   Python edition.

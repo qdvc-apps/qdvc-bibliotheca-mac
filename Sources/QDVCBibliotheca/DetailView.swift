@@ -28,7 +28,6 @@ struct DetailView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(Markup.attributed(model.referenceMarkup))
                             .textSelection(.enabled)
-                            .fixedSize(horizontal: false, vertical: true)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         if let cites = model.inText {
                             Divider()
@@ -42,6 +41,13 @@ struct DetailView: View {
                     }
                     .padding(4)
                 }
+                // The reference gets its full wrapped height before the notes
+                // editor takes the rest, but can still shrink (truncate) in a
+                // very short window. Do NOT use .fixedSize(vertical:) here: at
+                // the near-zero widths SwiftUI probes when measuring minimum
+                // sizes it makes the column thousands of points tall, which
+                // pushes the whole split view off-screen.
+                .layoutPriority(1)
 
                 HStack {
                     Button {
@@ -84,7 +90,6 @@ struct DetailView: View {
                     model.notesEdited(newText)
                 }
                 .frame(maxWidth: .infinity, minHeight: 160, maxHeight: .infinity)
-                .layoutPriority(1)
                 .overlay(RoundedRectangle(cornerRadius: 4).stroke(.separator))
             }
             .padding()

@@ -85,7 +85,9 @@ struct NotesEditor: NSViewRepresentable {
             if switchedDocument {
                 textView.undoManager?.removeAllActions()
                 textView.setSelectedRange(NSRange(location: 0, length: 0))
-                textView.scrollToBeginningOfDocument(nil)
+                // Scroll only our own clip view. (The scrollTo… responder
+                // actions can propagate to enclosing views.)
+                textView.scroll(.zero)
             }
             textView.isEditable = documentID != nil
         }
