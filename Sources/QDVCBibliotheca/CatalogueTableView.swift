@@ -106,11 +106,14 @@ struct CatalogueTableView: View {
         .onChange(of: model.selectedID) { model.selectionChanged() }
         .overlay {
             if model.rows.isEmpty && !model.isLoading {
-                if model.searchText.isEmpty {
+                if !model.searchText.isEmpty {
+                    ContentUnavailableView.search(text: model.searchText)
+                } else if model.currentWorkKey != nil {
+                    ContentUnavailableView("No Records in This Work", systemImage: "folder",
+                                           description: Text("Right-click a record and choose Allocate to My Works\u{2026}, or import BibTeX while this work is selected."))
+                } else {
                     ContentUnavailableView("No Records", systemImage: "tray",
                                            description: Text("Nothing in this part of the library."))
-                } else {
-                    ContentUnavailableView.search(text: model.searchText)
                 }
             }
         }
@@ -151,6 +154,14 @@ struct RecordMenuItems: View {
         Divider()
         Button("Copy Bibliotheca ID") { model.copyID(id) }
             .disabled(id == nil)
+        Divider()
+        Button("Allocate to My Works\u{2026}") { model.beginAllocate(id.map { [$0] } ?? []) }
+            .disabled(id == nil)
+        Button("Rename Bibliotheca ID\u{2026}") { model.beginRename(id) }
+            .disabled(id == nil)
+        if let outletID = model.outletID(forRecord: id) {
+            Button("Show Outlet") { model.revealOutlet(outletID) }
+        }
         Divider()
         Button("Reveal .bib in Finder") { model.revealInFinder(id, markdown: false) }
             .disabled(id == nil)

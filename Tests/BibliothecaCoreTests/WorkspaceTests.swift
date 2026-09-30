@@ -186,6 +186,21 @@ final class WorkspaceTests: XCTestCase {
         XCTAssertTrue(report.formatted().contains("BibTeX key does not match Bibliotheca ID (1):"))
     }
 
+    func testCaseOnlyRename() throws {
+        let ws = loaded()
+        try write("markdown/Z/Zuboff2019.md", "---\n{}\n---\nNotes survive.\n")
+        try ws.renameRecord("Zuboff2019", to: "ZUBOFF2019")
+        let bibNames = try FileManager.default.contentsOfDirectory(
+            atPath: root.appendingPathComponent("bibtex/Z").path)
+        XCTAssertEqual(bibNames, ["ZUBOFF2019.bib"])
+        let mdNames = try FileManager.default.contentsOfDirectory(
+            atPath: root.appendingPathComponent("markdown/Z").path)
+        XCTAssertEqual(mdNames, ["ZUBOFF2019.md"])
+        XCTAssertEqual(ws.readNotes(try XCTUnwrap(ws.record("ZUBOFF2019"))).body, "Notes survive.\n")
+        XCTAssertEqual(try read("my_works/thesis.yml"),
+                       "name: My Thesis\ncites:\n- SmithJones2025_JBIB\n- ZUBOFF2019\n")
+    }
+
     func testCreateAndAllocateWork() throws {
         let ws = loaded()
         let work = try ws.createMyWork(named: "Grant Proposal")

@@ -3,8 +3,10 @@ import Combine
 import QuickLook
 import SwiftUI
 
-/// The main window: a three-column split view (filters | records | detail),
-/// or the welcome screen when no workspace is open.
+/// The main window. Like Activity Monitor, a segmented control centred in the
+/// toolbar switches between the Catalogue (a three-column split view) and the
+/// full-width Authors, Outlets and DOI Lookup tabs. The welcome screen shows
+/// when no workspace is open.
 struct ContentView: View {
     @Environment(AppModel.self) private var model
 
@@ -14,21 +16,28 @@ struct ContentView: View {
             if model.workspace == nil && !model.isLoading {
                 WelcomeView()
             } else {
-                NavigationSplitView {
-                    SidebarView()
-                        .navigationSplitViewColumnWidth(min: 180, ideal: 220, max: 320)
-                } content: {
-                    CatalogueTableView()
-                        .navigationSplitViewColumnWidth(min: 420, ideal: 700)
-                } detail: {
-                    DetailView()
+                Group {
+                    switch model.currentTab {
+                    case .catalogue: CatalogueView()
+                    case .authors: AuthorsView()
+                    case .outlets: OutletsView()
+                    case .doiLookup: DOILookupView()
+                    }
                 }
-                .searchable(text: $model.searchText, placement: .toolbar, prompt: "Filter")
-                .onChange(of: model.searchText) { model.refreshRows() }
                 .dropDestination(for: URL.self) { urls, _ in
                     model.beginImport(files: urls)
                 }
                 .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Picker("View", selection: $model.currentTab) {
+                            ForEach(AppTab.allCases) { tab in
+                                Text(tab.title).tag(tab)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .labelsHidden()
+                        .help("Switch between the Catalogue, Authors, Outlets and DOI Lookup (\u{2318}1\u{2013}\u{2318}4)")
+                    }
                     ToolbarItem(placement: .primaryAction) {
                         Button {
                             model.beginImport()
@@ -60,8 +69,8 @@ struct ContentView: View {
             }
         }
         .quickLookPreview($model.quickLookURL)
-        .sheet(item: $model.importRequest) { request in
-            ImportSheet(request: request)
+        .sheet(item: $model.activeSheet) { sheet in
+            SheetContent(sheet: sheet)
                 .environment(model)
         }
         .alert(model.alert?.title ?? "",
@@ -76,6 +85,54 @@ struct ContentView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.willResignActiveNotification)) { _ in
             model.flushNotes()
+        }
+    }
+}
+
+/// The Catalogue tab: filters | records | detail.
+struct CatalogueView: View {
+    @Environment(AppModel.self) private var model
+
+    var body: some View {
+        @Bindable var model = model
+        NavigationSplitView {
+            SidebarView()
+                .navigationSplitViewColumnWidth(min: 180, ideal: 220, max: 320)
+        } content: {
+            CatalogueTableView()
+                .navigationSplitViewColumnWidth(min: 420, ideal: 700)
+        } detail: {
+            DetailView()
+        }
+        .searchable(text: $model.searchText, placement: .toolbar, prompt: "Filter records")
+        .onChange(of: model.searchText) { model.refreshRows() }
+    }
+}
+
+/// Picks the view for the sheet that is open.
+private struct SheetContent: View {
+    @Environment(AppModel.self) private var model
+    let sheet: ActiveSheet
+
+    var body: some View {
+        switch sheet {
+        case .importBibTeX(let request):
+            ImportSheet(request: request)
+        case .allocate(let ids):
+            AllocateSheet(recordIDs: ids)
+        case .newWork(let ids):
+            NewWorkSheet(allocating: ids)
+        case .rename(let id):
+            RenameSheet(recordID: id)
+        case .nickname(let id):
+            NicknameSheet(outletID: id,
+                          outletName: model.workspace?.outlets[id]?.name ?? id,
+                          initialNickname: model.workspace?.outlets[id]?.nickname ?? "")
+        case .jflags(let id):
+            JFlagsSheet(outletID: id,
+                        outletName: model.workspace?.outlets[id]?.name ?? id,
+                        current: model.workspace?.outlets[id]?.sortedJflags() ?? [],
+                        presets: Prefs.jflagPresets.map { $0.flag.trimmed }.filter { !$0.isEmpty })
         }
     }
 }

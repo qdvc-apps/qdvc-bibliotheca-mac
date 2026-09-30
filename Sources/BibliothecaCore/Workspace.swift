@@ -576,17 +576,10 @@ public final class Workspace: @unchecked Sendable {
         guard records[newID] == nil else { throw WorkspaceError("A record named '\(newID)' already exists.") }
         guard let rec = records[oldID] else { throw WorkspaceError("No record named '\(oldID)'.") }
 
-        let fm = FileManager.default
         let newBib = bibURL(for: newID)
         let newMD = mdURL(for: newID)
-        if fileExists(rec.bibURL) {
-            try fm.createDirectory(at: newBib.deletingLastPathComponent(), withIntermediateDirectories: true)
-            try fm.moveItem(at: rec.bibURL, to: newBib)
-        }
-        if fileExists(rec.mdURL) {
-            try fm.createDirectory(at: newMD.deletingLastPathComponent(), withIntermediateDirectories: true)
-            try fm.moveItem(at: rec.mdURL, to: newMD)
-        }
+        if fileExists(rec.bibURL) { try moveFile(rec.bibURL, to: newBib) }
+        if fileExists(rec.mdURL) { try moveFile(rec.mdURL, to: newMD) }
         records.removeValue(forKey: oldID)
         rec.bibliothecaID = newID
         rec.bibURL = newBib
@@ -611,6 +604,22 @@ public final class Workspace: @unchecked Sendable {
         deriveAuthors()
         deriveOutlets()
         saveCache()
+    }
+
+    /// Move a file, creating the destination folder. A rename that only
+    /// changes letter case goes via a temporary name, because on a
+    /// case-insensitive volume (the macOS default) the destination "exists".
+    private func moveFile(_ source: URL, to destination: URL) throws {
+        let fm = FileManager.default
+        try fm.createDirectory(at: destination.deletingLastPathComponent(), withIntermediateDirectories: true)
+        if source.standardizedFileURL.path.lowercased() == destination.standardizedFileURL.path.lowercased() {
+            let temporary = source.deletingLastPathComponent()
+                .appendingPathComponent(".rename-\(UUID().uuidString)-\(source.lastPathComponent)")
+            try fm.moveItem(at: source, to: temporary)
+            try fm.moveItem(at: temporary, to: destination)
+        } else {
+            try fm.moveItem(at: source, to: destination)
+        }
     }
 
     @discardableResult

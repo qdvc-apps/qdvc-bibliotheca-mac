@@ -17,9 +17,11 @@ use this one.
 
 ## Status
 
-This is the first milestone: the **Catalogue**.
+The window has four tabs, switched with the segmented control in the toolbar
+(⌘1–⌘4), as in Activity Monitor: **Catalogue**, **Authors**, **Outlets** and
+**DOI Lookup**.
 
-- Three-column window: library filters (all records, by type, by full-text
+- Catalogue — a three-column view: library filters (all records, by type, by full-text
   availability, by DOI status, My Works, starred authors and outlets) with
   count badges; a sortable, filterable table (PDF icon, Bibliotheca ID, Author,
   Year, J-Flags, Outlet with the nickname in bold, Title, Type); and a detail
@@ -37,13 +39,23 @@ This is the first milestone: the **Catalogue**.
   paste or load entries, review them, and optionally allocate the new records
   to one of your works (the work you're viewing is preselected). Entries whose
   DOI is already in the library are skipped and listed.
+- My Works: create a work (⌘N, or the + next to My Works in the sidebar),
+  allocate records to works (right-click → Allocate to My Works…), and
+  rename a record's Bibliotheca ID (F2). Renaming moves its `.bib` and `.md`
+  and updates every work that cites it, and suggests an ID ending in the
+  outlet's nickname.
+- Authors — every author derived from your BibTeX, with starring (starred
+  authors become sidebar filters) and Show Works in Catalogue.
+- Outlets — journals and proceedings with starring, nicknames and J-Flags.
+  J-Flag presets and their display order are set in Settings → J-Flags.
+- DOI Lookup — check whether a DOI is already in the library and jump to the
+  record.
 - Refresh (⌘R) only re-reads files that changed on disk, so edits made in a
   text editor, by a sync client or on another machine appear quickly.
 
 Not built yet (see the roadmap in [docs/MAINTENANCE.md](docs/MAINTENANCE.md)):
-Authors and Outlets management (starring, nicknames, J-Flags), DOI lookup, the My Works editor, renaming records, the Validate report, custom
-CSL styles, and the J-Flag preset editor. The model layer for most of these is
-already written and tested; they need their UI.
+the My Works editor (renaming a work, removing citations, `published_as`), the
+Validate report, and custom CSL styles.
 
 ## Requirements
 
@@ -105,8 +117,11 @@ you rebuild. That is expected.
 
 | Shortcut | Action |
 | --- | --- |
+| ⌘1–⌘4 | Catalogue, Authors, Outlets, DOI Lookup |
 | ⌘O | Open workspace |
+| ⌘N | New work |
 | ⌘I | Import BibTeX |
+| F2 | Rename the selected record's Bibliotheca ID |
 | ⇧⌘W | Close workspace |
 | ⌘R / ⇧⌘R | Refresh changed files / rescan everything |
 | ⌘Y | Quick Look the selected record's PDF or EPUB |
@@ -114,7 +129,7 @@ you rebuild. That is expected.
 | ⇧⌘C / ⌥⇧⌘C | Copy reference (formatted / plain) |
 | ⌥⌘R | Reveal the `.bib` in Finder |
 | ⌘, | Settings |
-| Double-click a row | Open its PDF (or EPUB) |
+| Double-click a row | Catalogue: open its PDF (or EPUB); Authors/Outlets: show its records |
 
 ## Documentation
 

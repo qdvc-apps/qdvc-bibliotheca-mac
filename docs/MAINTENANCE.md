@@ -72,14 +72,16 @@ handed to the main actor, never shared concurrently.
 | --- | --- |
 | `BibliothecaApp.swift` | `@main` app, single `Window` scene, app delegate |
 | `Commands.swift` | menu-bar commands and shortcuts |
-| `ContentView.swift` | three-column split view, toolbar, search, welcome screen |
+| `ContentView.swift` | tab switching (toolbar segmented control), `CatalogueView` split view, the one sheet host, welcome screen |
+| `AuthorsView.swift`, `OutletsView.swift`, `DOILookupView.swift` | the Authors, Outlets and DOI Lookup tabs |
+| `Sheets.swift` | Allocate, New Work, Rename, Nickname and J-Flags sheets |
 | `SidebarView.swift` | library filters with count badges |
 | `CatalogueTableView.swift` | the records `Table`, `CatalogueRow`, record context menu |
 | `DetailView.swift` | reference, in-text citations, copy/open actions, notes |
 | `ImportSheet.swift` | Import BibTeX sheet with the allocate-to-work picker |
 | `NotesEditor.swift` | `NSTextView` wrapper (Markdown notes, or plain text with `markdown: false`) and Markdown highlighter |
 | `AppModel.swift` | all window state and actions |
-| `Prefs.swift`, `SettingsView.swift` | preferences and the Settings window |
+| `Prefs.swift`, `SettingsView.swift` | preferences and the Settings window (General, J-Flags) |
 | `Platform.swift` | pasteboard, Finder, text editor, markup → `AttributedString` |
 
 `AppModel` is the single `@Observable` object behind the window. Every action
@@ -124,6 +126,17 @@ pattern for future record mutations.
     text inside a column. SwiftUI measures minimum sizes at near-zero widths,
     where such text is thousands of points tall. Use `.layoutPriority` to
     favour text over a flexible neighbour instead (as `DetailView` does).
+- **One sheet at a time.** Every sheet is a case of `ActiveSheet`, presented
+  by a single `.sheet(item: $model.activeSheet)` in `ContentView`. Sheets only
+  collect input; the `AppModel` method that applies the change also closes
+  the sheet. Methods that can fail with a message the user should fix (rename,
+  nickname) throw instead, so the sheet stays open and shows the problem.
+- **Return triggers a sheet's default button even inside a text field**
+  (standard AppKit behaviour). If Return in a field should do something else,
+  move `.defaultAction` to that button while the field has text, as
+  `JFlagsSheet` does.
+- **Renames flush notes first.** `performRename` writes pending notes before
+  the `.md` moves, then updates `notesRecordID` so autosave follows the file.
 - **Load-bearing strings.** The type labels (`Builtin.typeLabels`) and the
   citation-style ids (`__apa__`, `__acis__`) keep the same values as in the
   Python edition.
@@ -205,21 +218,26 @@ artifact. GitHub's macOS runners are free for public repositories.
 Model support already exists (and is tested) for the items marked *core
 ready*; they need UI.
 
-1. **Authors and Outlets** as sidebar-driven lists or a second window: star
-   toggles, "Show works", outlet nicknames and J-Flags (*core ready*).
+1. ~~Authors and Outlets~~ — done: tabs with star toggles, "Show in
+   Catalogue" (a non-starred author or outlet appears under *Query Results* in
+   the sidebar, like the GTK transient node), nicknames and J-Flags.
 2. ~~Import BibTeX~~ — done: `ImportSheet` via File → Import BibTeX… (⌘I), the
    toolbar, or dropping `.bib` files on the window. The sheet preselects the
    work shown in the sidebar (`AppModel.currentWorkKey`); after import,
    `AppModel.performImport` allocates, switches to that work, selects the first
    new record, and reports skipped entries (duplicate DOI or existing ID) in
    an alert, or else shows a transient subtitle message.
-3. **My Works**: create, edit (name, cites, published_as), allocate records via
-   the context menu and drag and drop from the table (*core ready*).
-4. **Rename Bibliotheca ID** (F2 / Return in the table) and **Validate**
-   report window (*core ready*).
-5. **DOI lookup** as a search scope or sheet (`Workspace.lookupDOI`).
-6. **J-Flag presets** editor in Settings (the priorities are already read from
-   `Prefs.Key.jflagPresets`), and sort-order persistence.
+3. **My Works**: ~~create~~ and ~~allocate~~ are done (`NewWorkSheet`,
+   `AllocateSheet`). Still to do: an editor for name, cites (including removing
+   a citation) and `published_as` (the GTK `MyWorkEditor`), and allocating by
+   dragging rows from the table onto a work in the sidebar. Removing citations
+   needs a small `Workspace` addition.
+4. ~~Rename Bibliotheca ID~~ — done (`RenameSheet`, F2). Still to do: the
+   **Validate** report window (*core ready*: `Workspace.validate`).
+5. ~~DOI lookup~~ — done (DOI Lookup tab).
+6. ~~J-Flag presets editor~~ — done (Settings → J-Flags). Still to do:
+   sort-order persistence and multi-record selection in the Catalogue table
+   (the allocate sheet already accepts several records).
 7. **CSL styles**: render with citeproc-js inside `JavaScriptCore` (bundled as
    a resource), listing the workspace's `csl/` files in the style picker. Until then, a stored CSL style id falls back to APA.
 8. **Live refresh** with FSEvents (the incremental cache makes a reload after

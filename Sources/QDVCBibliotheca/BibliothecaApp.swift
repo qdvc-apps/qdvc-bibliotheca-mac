@@ -25,6 +25,7 @@ struct BibliothecaApp: App {
 
         Settings {
             SettingsView()
+                .environment(model)
         }
     }
 }

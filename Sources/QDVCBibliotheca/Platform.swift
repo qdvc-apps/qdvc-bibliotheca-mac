@@ -53,3 +53,8 @@ extension Markup {
         return out
     }
 }
+
+extension String {
+    /// The string without leading/trailing whitespace and newlines.
+    var trimmed: String { trimmingCharacters(in: .whitespacesAndNewlines) }
+}

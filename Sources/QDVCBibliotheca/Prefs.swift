@@ -52,19 +52,37 @@ enum Prefs {
         defaults.set(map, forKey: Key.citationStyles)
     }
 
-    /// J-Flag presets as `[{flag, priority}]` (same shape as the Python
-    /// config). There is no editor for these yet; they can be set with
-    /// `defaults write`.
+    /// J-Flag presets as `[{flag, priority}]` (the same shape as the Python
+    /// edition's config), edited in Settings → J-Flags.
+    static var jflagPresets: [JFlagPreset] {
+        get {
+            guard let raw = defaults.array(forKey: Key.jflagPresets) else { return [] }
+            return raw.compactMap { item -> JFlagPreset? in
+                guard let dict = item as? [String: Any], let flag = dict["flag"] as? String else { return nil }
+                let priority = (dict["priority"] as? NSNumber)?.doubleValue ?? 0
+                return JFlagPreset(flag: flag, priority: priority)
+            }
+        }
+        set {
+            let plist = newValue.map { ["flag": $0.flag, "priority": $0.priority] as [String: Any] }
+            defaults.set(plist, forKey: Key.jflagPresets)
+        }
+    }
+
+    /// Flag → display priority (lower first). Blank flags are ignored.
     static func jflagPriority() -> [String: Double] {
-        guard let raw = defaults.array(forKey: Key.jflagPresets) else { return [:] }
         var map: [String: Double] = [:]
-        for item in raw {
-            guard let dict = item as? [String: Any],
-                  let flag = (dict["flag"] as? String)?.trimmingCharacters(in: .whitespaces),
-                  !flag.isEmpty else { continue }
-            let priority = (dict["priority"] as? NSNumber)?.doubleValue ?? 0
-            map[flag] = priority
+        for preset in jflagPresets {
+            let flag = preset.flag.trimmingCharacters(in: .whitespaces)
+            if !flag.isEmpty { map[flag] = preset.priority }
         }
         return map
     }
+}
+
+/// One configured J-Flag and its display priority.
+struct JFlagPreset: Identifiable, Hashable {
+    var id = UUID()
+    var flag: String
+    var priority: Double
 }

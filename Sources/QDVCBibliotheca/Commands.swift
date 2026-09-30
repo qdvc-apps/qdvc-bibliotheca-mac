@@ -1,5 +1,23 @@
+import AppKit
 import SwiftUI
 import BibliothecaCore
+
+extension KeyEquivalent {
+    /// F2, the GTK app's Rename shortcut.
+    static let f2 = KeyEquivalent(Character(Unicode.Scalar(UInt32(NSF2FunctionKey))!))
+}
+
+extension AppTab {
+    /// ⌘1…⌘4, in tab order.
+    var shortcut: KeyEquivalent {
+        switch self {
+        case .catalogue: return "1"
+        case .authors: return "2"
+        case .outlets: return "3"
+        case .doiLookup: return "4"
+        }
+    }
+}
 
 /// Menu-bar commands. Standard items (Edit, Window, Help, Settings…, Quit,
 /// Hide) come from the system; these add the workspace and record actions.
@@ -24,6 +42,12 @@ struct BibliothecaCommands: Commands {
                 }
             }
             Divider()
+            Button("New Work\u{2026}") {
+                let selected = model.currentTab == .catalogue ? model.selectedID : nil
+                model.beginNewWork(allocating: selected.map { [$0] } ?? [])
+            }
+            .keyboardShortcut("n")
+            .disabled(model.workspace == nil || model.isLoading)
             Button("Import BibTeX\u{2026}") { model.beginImport() }
                 .keyboardShortcut("i")
                 .disabled(model.workspace == nil || model.isLoading)
@@ -34,6 +58,12 @@ struct BibliothecaCommands: Commands {
         }
 
         CommandGroup(after: .toolbar) {
+            ForEach(AppTab.allCases) { tab in
+                Button(tab.title) { model.currentTab = tab }
+                    .keyboardShortcut(tab.shortcut)
+                    .disabled(model.workspace == nil)
+            }
+            Divider()
             Button("Refresh") { model.refresh() }
                 .keyboardShortcut("r")
                 .disabled(model.workspace == nil)
@@ -44,7 +74,8 @@ struct BibliothecaCommands: Commands {
         }
 
         CommandMenu("Record") {
-            let id = model.selectedID
+            // Record commands act on the Catalogue selection, so only there.
+            let id = model.currentTab == .catalogue ? model.selectedID : nil
             Button("Open PDF") { model.openFulltext(.pdf, id: id) }
                 .keyboardShortcut(.return, modifiers: [.command])
                 .disabled(!model.hasFulltext(.pdf, id: id))
@@ -62,6 +93,14 @@ struct BibliothecaCommands: Commands {
                 .disabled(id == nil)
             Button("Copy Bibliotheca ID") { model.copyID(id) }
                 .disabled(id == nil)
+            Divider()
+            Button("Allocate to My Works\u{2026}") { model.beginAllocate(id.map { [$0] } ?? []) }
+                .disabled(id == nil)
+            Button("Rename Bibliotheca ID\u{2026}") { model.beginRename(id) }
+                .keyboardShortcut(.f2, modifiers: [])
+                .disabled(id == nil)
+            Button("Show Outlet") { model.revealOutlet(model.outletID(forRecord: id)) }
+                .disabled(model.outletID(forRecord: id) == nil)
             Divider()
             Button("Reveal .bib in Finder") { model.revealInFinder(id, markdown: false) }
                 .keyboardShortcut("r", modifiers: [.command, .option])

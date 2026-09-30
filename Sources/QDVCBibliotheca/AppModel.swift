@@ -34,6 +34,71 @@ struct ImportRequest: Identifiable {
     var workKey: String?
 }
 
+/// The window's top-level tabs (the segmented control in the toolbar).
+enum AppTab: String, CaseIterable, Identifiable {
+    case catalogue, authors, outlets, doiLookup
+
+    var id: Self { self }
+
+    var title: String {
+        switch self {
+        case .catalogue: return "Catalogue"
+        case .authors: return "Authors"
+        case .outlets: return "Outlets"
+        case .doiLookup: return "DOI Lookup"
+        }
+    }
+}
+
+/// The one sheet that can be open over the main window.
+enum ActiveSheet: Identifiable {
+    case importBibTeX(ImportRequest)
+    case allocate([String])
+    case newWork(allocating: [String])
+    case rename(String)
+    case nickname(String)
+    case jflags(String)
+
+    var id: String {
+        switch self {
+        case .importBibTeX(let request): return "import-\(request.id)"
+        case .allocate(let ids): return "allocate-" + ids.joined(separator: ",")
+        case .newWork: return "new-work"
+        case .rename(let id): return "rename-\(id)"
+        case .nickname(let id): return "nickname-\(id)"
+        case .jflags(let id): return "jflags-\(id)"
+        }
+    }
+}
+
+/// A row of the Authors tab.
+struct AuthorRow: Identifiable, Hashable {
+    let id: String
+    let name: String
+    let starred: Bool
+    let count: Int
+
+    var starRank: Int { starred ? 0 : 1 }
+}
+
+/// A row of the Outlets tab.
+struct OutletRow: Identifiable, Hashable {
+    let id: String
+    let name: String
+    let nickname: String
+    let jflags: String
+    let starred: Bool
+    let count: Int
+
+    var starRank: Int { starred ? 0 : 1 }
+}
+
+enum DOILookupOutcome: Equatable {
+    case found(String)
+    case notFound(String)
+    case empty
+}
+
 struct InTextCitations: Equatable {
     var parenthetical: String
     var narrative: String
@@ -49,6 +114,8 @@ final class AppModel {
     private(set) var isLoading = false
     var alert: AlertInfo?
     private(set) var recentWorkspaces: [String] = Prefs.recentWorkspaces
+    var currentTab: AppTab = .catalogue
+    var activeSheet: ActiveSheet?
 
     // Pane 1
     var sidebarSelection: SidebarItem? = .all
@@ -75,8 +142,24 @@ final class AppModel {
 
     var quickLookURL: URL?
 
-    // Import
-    var importRequest: ImportRequest?
+    // Authors tab
+    var authorSearchText = ""
+    var authorsStarredOnly = false
+    var authorSortOrder: [KeyPathComparator<AuthorRow>] = [KeyPathComparator(\AuthorRow.name)]
+    private(set) var authorRows: [AuthorRow] = []
+    var selectedAuthorID: String?
+
+    // Outlets tab
+    var outletSearchText = ""
+    var outletsStarredOnly = false
+    var outletSortOrder: [KeyPathComparator<OutletRow>] = [KeyPathComparator(\OutletRow.name)]
+    private(set) var outletRows: [OutletRow] = []
+    var selectedOutletID: String?
+
+    // DOI Lookup tab
+    var doiQuery = ""
+    private(set) var doiOutcome: DOILookupOutcome?
+
     /// A short-lived message shown in the window subtitle.
     private(set) var statusMessage: String?
     @ObservationIgnored private var statusTask: Task<Void, Never>?
@@ -99,8 +182,15 @@ final class AppModel {
     var statusLine: String {
         if let statusMessage { return statusMessage }
         guard let ws = workspace else { return "" }
-        let total = ws.records.count
-        return rows.count == total ? "\(total) records" : "\(rows.count) of \(total) records"
+        func counted(_ shown: Int, _ total: Int, _ noun: String) -> String {
+            shown == total ? "\(total) \(noun)" : "\(shown) of \(total) \(noun)"
+        }
+        switch currentTab {
+        case .catalogue: return counted(rows.count, ws.records.count, "records")
+        case .authors: return counted(authorRows.count, ws.authors.count, "authors")
+        case .outlets: return counted(outletRows.count, ws.outlets.count, "outlets")
+        case .doiLookup: return "\(ws.records.count) records"
+        }
     }
 
     func hasFulltext(_ kind: FulltextKind, id: String?) -> Bool {
@@ -154,7 +244,7 @@ final class AppModel {
 
     func closeWorkspace() {
         flushNotes()
-        importRequest = nil
+        activeSheet = nil
         workspace = nil
         selectedID = nil
         sidebarSelection = .all
@@ -162,6 +252,8 @@ final class AppModel {
         clearDetail()
         refreshSidebar()
         refreshRows()
+        refreshAuthorRows()
+        refreshOutletRows()
     }
 
     /// Reload from disk (only changed files are re-parsed), keeping the
@@ -208,9 +300,14 @@ final class AppModel {
             sidebarSelection = .all
             selectedID = nil
             searchText = ""
+            selectedAuthorID = nil
+            selectedOutletID = nil
+            doiOutcome = nil
         }
         refreshSidebar()
         refreshRows()
+        refreshAuthorRows()
+        refreshOutletRows()
         // Write any notes typed while loading, then show the fresh detail.
         flushNotes()
         loadDetail()
@@ -219,8 +316,8 @@ final class AppModel {
     private func isValid(_ item: SidebarItem, in ws: Workspace) -> Bool {
         switch item {
         case .work(let key): return ws.myWorks[key] != nil
-        case .author(let id): return ws.authors[id]?.starred == true
-        case .outlet(let id): return ws.outlets[id]?.starred == true
+        case .author(let id): return ws.authors[id] != nil
+        case .outlet(let id): return ws.outlets[id] != nil
         default: return true
         }
     }
@@ -257,7 +354,7 @@ final class AppModel {
     /// Open the Import BibTeX sheet, preselecting the work being viewed.
     func beginImport(text: String = "", sourceName: String? = nil) {
         guard workspace != nil, !isLoading else { return }
-        importRequest = ImportRequest(text: text, sourceName: sourceName, workKey: currentWorkKey)
+        activeSheet = .importBibTeX(ImportRequest(text: text, sourceName: sourceName, workKey: currentWorkKey))
     }
 
     /// Open the sheet pre-filled with dropped `.bib` files. Returns false when
@@ -279,7 +376,7 @@ final class AppModel {
     /// work, then show the result.
     func performImport(text: String, allocateTo workKey: String?) {
         guard let ws = workspace else { return }
-        importRequest = nil
+        activeSheet = nil
         let entryCount = BibTeX.splitEntries(text).count
         let result: Workspace.ImportResult
         do {
@@ -304,7 +401,10 @@ final class AppModel {
         // would hide it).
         refreshSidebar()
         if allocated > 0, let key = workKey { sidebarSelection = .work(key) }
+        currentTab = .catalogue
         refreshRows()
+        refreshAuthorRows()
+        refreshOutletRows()
         let firstNew = result.imported.sorted { $0.lowercased() < $1.lowercased() }.first
         if let firstNew {
             if !rows.contains(where: { $0.id == firstNew }) {
@@ -344,7 +444,7 @@ final class AppModel {
         }
     }
 
-    private func showStatus(_ message: String) {
+    func showStatus(_ message: String) {
         statusMessage = message
         statusTask?.cancel()
         statusTask = Task { [weak self] in
@@ -384,7 +484,29 @@ final class AppModel {
         for w in works { counts[.work(w.key)] = ws.recordsForWork(w.key).count }
         for a in starredAuthors { counts[.author(a.authorID)] = a.recordIDs.count }
         for o in starredOutlets { counts[.outlet(o.outletID)] = o.recordIDs.count }
+        if case .author(let id)? = sidebarSelection, let a = ws.authors[id] {
+            counts[.author(id)] = a.recordIDs.count
+        }
+        if case .outlet(let id)? = sidebarSelection, let o = ws.outlets[id] {
+            counts[.outlet(id)] = o.recordIDs.count
+        }
         sidebarCounts = counts
+    }
+
+    /// An author or outlet shown in the Catalogue although it is not starred
+    /// (after "Show in Catalogue"); the sidebar lists it under Query Results,
+    /// like the GTK app's transient node.
+    var transientSidebarItem: SidebarItem? {
+        guard let ws = workspace, let item = sidebarSelection else { return nil }
+        switch item {
+        case .author(let id):
+            if let a = ws.authors[id], !a.starred { return item }
+        case .outlet(let id):
+            if let o = ws.outlets[id], !o.starred { return item }
+        default:
+            break
+        }
+        return nil
     }
 
     func title(for item: SidebarItem) -> String {
@@ -660,5 +782,310 @@ final class AppModel {
             }
         }
         Platform.openInTextEditor(url)
+    }
+
+    // MARK: - Navigation between tabs
+
+    /// Show a record in the Catalogue, widening the filter if it is hidden.
+    func revealRecord(_ id: String) {
+        guard workspace?.record(id) != nil else { return }
+        currentTab = .catalogue
+        if !rows.contains(where: { $0.id == id }) {
+            sidebarSelection = .all
+            searchText = ""
+            refreshSidebar()
+            refreshRows()
+        }
+        selectedID = id
+    }
+
+    func showAuthorWorks(_ authorID: String?) {
+        guard let authorID, workspace?.authors[authorID] != nil else { return }
+        currentTab = .catalogue
+        searchText = ""
+        sidebarSelection = .author(authorID)
+        refreshSidebar()
+        refreshRows()
+    }
+
+    func showOutletWorks(_ outletID: String?) {
+        guard let outletID, workspace?.outlets[outletID] != nil else { return }
+        currentTab = .catalogue
+        searchText = ""
+        sidebarSelection = .outlet(outletID)
+        refreshSidebar()
+        refreshRows()
+    }
+
+    /// The outlet a record belongs to (journal articles and proceedings).
+    func outletID(forRecord id: String?) -> String? {
+        guard let ws = workspace, let rec = record(id) else { return nil }
+        return ws.outlet(for: rec)?.outletID
+    }
+
+    /// Jump to the Outlets tab with the given outlet selected.
+    func revealOutlet(_ outletID: String?) {
+        guard let outletID, workspace?.outlets[outletID] != nil else { return }
+        currentTab = .outlets
+        outletSearchText = ""
+        outletsStarredOnly = false
+        refreshOutletRows()
+        selectedOutletID = outletID
+    }
+
+    // MARK: - Authors tab
+
+    func refreshAuthorRows() {
+        guard let ws = workspace else {
+            authorRows = []
+            return
+        }
+        let needle = authorSearchText.trimmed
+        var built = ws.allAuthors().map {
+            AuthorRow(id: $0.authorID, name: $0.displayName, starred: $0.starred, count: $0.recordIDs.count)
+        }
+        if authorsStarredOnly { built = built.filter(\.starred) }
+        if !needle.isEmpty {
+            built = built.filter {
+                $0.name.localizedCaseInsensitiveContains(needle) || $0.id.localizedCaseInsensitiveContains(needle)
+            }
+        }
+        if !authorSortOrder.isEmpty { built.sort(using: authorSortOrder) }
+        authorRows = built
+    }
+
+    func setAuthorStarred(_ authorID: String, _ starred: Bool) {
+        guard let ws = workspace else { return }
+        do {
+            try ws.setAuthorStarred(authorID, starred)
+        } catch {
+            alert = AlertInfo(title: "Could Not Update Author", message: error.localizedDescription)
+        }
+        refreshSidebar()
+        refreshAuthorRows()
+    }
+
+    // MARK: - Outlets tab
+
+    func refreshOutletRows() {
+        guard let ws = workspace else {
+            outletRows = []
+            return
+        }
+        let priority = Prefs.jflagPriority()
+        let needle = outletSearchText.trimmed
+        var built = ws.allOutlets().map { o -> OutletRow in
+            let flags = CatalogueSupport.orderJflags(o.sortedJflags(), priority: priority)
+            return OutletRow(id: o.outletID, name: o.name, nickname: o.nickname,
+                             jflags: flags.joined(separator: ", "), starred: o.starred,
+                             count: o.recordIDs.count)
+        }
+        if outletsStarredOnly { built = built.filter(\.starred) }
+        if !needle.isEmpty {
+            built = built.filter {
+                $0.name.localizedCaseInsensitiveContains(needle)
+                    || $0.nickname.localizedCaseInsensitiveContains(needle)
+            }
+        }
+        if !outletSortOrder.isEmpty { built.sort(using: outletSortOrder) }
+        outletRows = built
+    }
+
+    func setOutletStarred(_ outletID: String, _ starred: Bool) {
+        guard let ws = workspace else { return }
+        do {
+            try ws.setOutletStarred(outletID, starred)
+        } catch {
+            alert = AlertInfo(title: "Could Not Update Outlet", message: error.localizedDescription)
+        }
+        refreshSidebar()
+        refreshOutletRows()
+    }
+
+    func beginSetNickname(_ outletID: String?) {
+        guard let outletID, workspace?.outlets[outletID] != nil else { return }
+        activeSheet = .nickname(outletID)
+    }
+
+    /// Throws (with a user-facing message) on an invalid or duplicate nickname,
+    /// so the sheet can stay open and show the problem.
+    func setOutletNickname(_ outletID: String, _ nickname: String) throws {
+        guard let ws = workspace else { return }
+        try ws.setOutletNickname(outletID, nickname)
+        activeSheet = nil
+        refreshSidebar()
+        refreshOutletRows()
+        refreshRows()
+    }
+
+    func beginSetJflags(_ outletID: String?) {
+        guard let outletID, workspace?.outlets[outletID] != nil else { return }
+        activeSheet = .jflags(outletID)
+    }
+
+    func setOutletJflags(_ outletID: String, _ flags: [String]) {
+        guard let ws = workspace else { return }
+        activeSheet = nil
+        do {
+            try ws.setOutletJflags(outletID, flags)
+        } catch {
+            alert = AlertInfo(title: "Could Not Update J-Flags", message: error.localizedDescription)
+        }
+        refreshOutletRows()
+        refreshRows()
+    }
+
+    /// Called by Settings when the J-Flag presets (display priorities) change.
+    func jflagPresetsChanged() {
+        refreshRows()
+        refreshOutletRows()
+    }
+
+    // MARK: - DOI Lookup tab
+
+    /// Look the DOI up and, like the GTK app, jump straight to the record.
+    func lookupDOI() {
+        let raw = doiQuery.trimmed
+        guard !raw.isEmpty else {
+            doiOutcome = .empty
+            return
+        }
+        guard let ws = workspace else { return }
+        if let id = ws.lookupDOI(raw) {
+            doiOutcome = .found(id)
+            revealRecord(id)
+        } else {
+            doiOutcome = .notFound(Naming.normaliseDOI(raw))
+        }
+    }
+
+    // MARK: - My Works
+
+    func beginAllocate(_ ids: [String]) {
+        let valid = ids.filter { workspace?.record($0) != nil }
+        guard !valid.isEmpty else { return }
+        activeSheet = .allocate(valid)
+    }
+
+    /// Add records to the chosen works, creating a new work first if named.
+    func performAllocate(ids: [String], to workKeys: [String], newWorkName: String) {
+        guard let ws = workspace else { return }
+        activeSheet = nil
+        var targets = workKeys
+        do {
+            let name = newWorkName.trimmed
+            if !name.isEmpty {
+                targets.append(try ws.createMyWork(named: name).key)
+            }
+            var added = 0
+            for key in targets {
+                added += try ws.allocateToWork(key, ids: ids)
+            }
+            refreshSidebar()
+            refreshRows()
+            let what = ids.count == 1 ? ids[0] : "\(ids.count) records"
+            if added == 0 {
+                showStatus("No change: the chosen works already include \(what).")
+            } else if targets.count == 1, let work = ws.myWorks[targets[0]] {
+                showStatus("Added \(what) to \u{201C}\(work.name)\u{201D}.")
+            } else {
+                showStatus("Added \(what) to \(targets.count) works.")
+            }
+        } catch {
+            refreshSidebar()
+            refreshRows()
+            alert = AlertInfo(title: "Could Not Allocate", message: error.localizedDescription)
+        }
+    }
+
+    /// Open the New Work sheet; `allocating` lists records the sheet may offer
+    /// to add to the new work straight away.
+    func beginNewWork(allocating ids: [String] = []) {
+        guard workspace != nil, !isLoading else { return }
+        activeSheet = .newWork(allocating: ids.filter { workspace?.record($0) != nil })
+    }
+
+    /// Create a work, optionally add records to it, and show it.
+    func createWork(named name: String, allocating ids: [String]) {
+        guard let ws = workspace else { return }
+        activeSheet = nil
+        do {
+            let work = try ws.createMyWork(named: name.trimmed)
+            if !ids.isEmpty { try ws.allocateToWork(work.key, ids: ids) }
+            currentTab = .catalogue
+            searchText = ""
+            sidebarSelection = .work(work.key)
+            refreshSidebar()
+            refreshRows()
+            if let first = ids.first { selectedID = first }
+            showStatus("Created \u{201C}\(work.name)\u{201D}.")
+        } catch {
+            alert = AlertInfo(title: "Could Not Create Work", message: error.localizedDescription)
+        }
+    }
+
+    func revealWork(_ key: String) {
+        guard let work = workspace?.myWorks[key] else { return }
+        Platform.revealInFinder(work.url)
+    }
+
+    func openWorkInTextEditor(_ key: String) {
+        guard let work = workspace?.myWorks[key] else { return }
+        Platform.openInTextEditor(work.url)
+    }
+
+    // MARK: - Rename
+
+    func beginRename(_ id: String?) {
+        guard let id, workspace?.record(id) != nil else { return }
+        activeSheet = .rename(id)
+    }
+
+    /// Why `newID` cannot be used, or nil if it can (or is unchanged).
+    func renameProblem(from oldID: String, to newID: String) -> String? {
+        let candidate = newID.trimmed
+        if candidate.isEmpty { return "Enter a Bibliotheca ID." }
+        if candidate == oldID { return nil }
+        if Naming.sanitiseID(candidate) != candidate {
+            return "Only letters, digits, hyphens (-) and underscores (_) are allowed."
+        }
+        if workspace?.record(candidate) != nil {
+            return "A record named \u{201C}\(candidate)\u{201D} already exists."
+        }
+        return nil
+    }
+
+    /// An ID whose suffix matches the record's outlet nickname, when the
+    /// current one doesn't (the convention the Validate report checks).
+    func suggestedID(for id: String) -> String? {
+        guard let ws = workspace, let rec = ws.record(id), let outlet = ws.outlet(for: rec),
+              !outlet.nickname.isEmpty else { return nil }
+        let suffix = Naming.idSuffix(id)
+        guard suffix != outlet.nickname else { return nil }
+        var base = id
+        if !suffix.isEmpty, let underscore = id.lastIndex(of: "_") {
+            base = String(id[..<underscore])
+        }
+        base = base.trimmingCharacters(in: CharacterSet(charactersIn: "_"))
+        let candidate = "\(base)_\(outlet.nickname)"
+        return ws.record(candidate) == nil ? candidate : nil
+    }
+
+    /// Rename a record. Throws so the sheet can show the problem and stay open.
+    func performRename(from oldID: String, to newIDRaw: String) throws {
+        guard let ws = workspace else { return }
+        let newID = newIDRaw.trimmed
+        // The notes file is about to move: write pending notes to it first.
+        flushNotes()
+        try ws.renameRecord(oldID, to: newID)
+        activeSheet = nil
+        if notesRecordID == oldID { notesRecordID = newID }
+        if selectedID == oldID { selectedID = newID }
+        refreshSidebar()
+        refreshRows()
+        refreshAuthorRows()
+        refreshOutletRows()
+        revealRecord(newID)
+        showStatus("Renamed \u{201C}\(oldID)\u{201D} to \u{201C}\(newID)\u{201D}.")
     }
 }
