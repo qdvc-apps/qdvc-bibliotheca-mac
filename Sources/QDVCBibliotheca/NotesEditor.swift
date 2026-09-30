@@ -9,6 +9,9 @@ struct NotesEditor: NSViewRepresentable {
     /// Changes when a different record's notes are shown; resets undo.
     var documentID: String?
     var fontSize: CGFloat
+    /// Markdown notes get highlighting and spell-checking; plain text (the
+    /// BibTeX box in the import sheet) gets neither.
+    var markdown = true
     var onEdit: @MainActor (String) -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -34,7 +37,7 @@ struct NotesEditor: NSViewRepresentable {
             textView.isAutomaticQuoteSubstitutionEnabled = false
             textView.isAutomaticDashSubstitutionEnabled = false
             textView.isAutomaticTextReplacementEnabled = false
-            textView.isContinuousSpellCheckingEnabled = true
+            textView.isContinuousSpellCheckingEnabled = markdown
             textView.textContainerInset = NSSize(width: 4, height: 6)
             context.coordinator.textView = textView
             context.coordinator.show(text, documentID: documentID, fontSize: fontSize)
@@ -95,7 +98,12 @@ struct NotesEditor: NSViewRepresentable {
         func highlight() {
             guard let textView, let storage = textView.textStorage else { return }
             let base = NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
-            highlighter.apply(to: storage, baseFont: base)
+            if parent.markdown {
+                highlighter.apply(to: storage, baseFont: base)
+            } else {
+                storage.setAttributes([.font: base, .foregroundColor: NSColor.textColor],
+                                      range: NSRange(location: 0, length: storage.length))
+            }
             textView.typingAttributes = [.font: base, .foregroundColor: NSColor.textColor]
         }
 

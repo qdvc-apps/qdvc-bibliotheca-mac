@@ -33,12 +33,15 @@ This is the first milestone: the **Catalogue**.
   column becomes the tie-breaker.
 - Open, Quick Look (⌘Y), link and unlink PDFs and EPUBs; reveal the `.bib` or
   `.md` in Finder; open either in your text editor.
+- Import BibTeX (⌘I, the toolbar, or by dropping `.bib` files on the window):
+  paste or load entries, review them, and optionally allocate the new records
+  to one of your works (the work you're viewing is preselected). Entries whose
+  DOI is already in the library are skipped and listed.
 - Refresh (⌘R) only re-reads files that changed on disk, so edits made in a
   text editor, by a sync client or on another machine appear quickly.
 
 Not built yet (see the roadmap in [docs/MAINTENANCE.md](docs/MAINTENANCE.md)):
-Authors and Outlets management (starring, nicknames, J-Flags), BibTeX import,
-DOI lookup, the My Works editor, renaming records, the Validate report, custom
+Authors and Outlets management (starring, nicknames, J-Flags), DOI lookup, the My Works editor, renaming records, the Validate report, custom
 CSL styles, and the J-Flag preset editor. The model layer for most of these is
 already written and tested; they need their UI.
 
@@ -103,6 +106,7 @@ you rebuild. That is expected.
 | Shortcut | Action |
 | --- | --- |
 | ⌘O | Open workspace |
+| ⌘I | Import BibTeX |
 | ⇧⌘W | Close workspace |
 | ⌘R / ⇧⌘R | Refresh changed files / rescan everything |
 | ⌘Y | Quick Look the selected record's PDF or EPUB |

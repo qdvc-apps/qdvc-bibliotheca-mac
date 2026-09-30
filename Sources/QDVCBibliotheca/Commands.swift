@@ -24,6 +24,10 @@ struct BibliothecaCommands: Commands {
                 }
             }
             Divider()
+            Button("Import BibTeX\u{2026}") { model.beginImport() }
+                .keyboardShortcut("i")
+                .disabled(model.workspace == nil || model.isLoading)
+            Divider()
             Button("Close Workspace") { model.closeWorkspace() }
                 .keyboardShortcut("w", modifiers: [.command, .shift])
                 .disabled(model.workspace == nil)

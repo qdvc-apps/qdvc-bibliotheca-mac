@@ -76,7 +76,8 @@ handed to the main actor, never shared concurrently.
 | `SidebarView.swift` | library filters with count badges |
 | `CatalogueTableView.swift` | the records `Table`, `CatalogueRow`, record context menu |
 | `DetailView.swift` | reference, in-text citations, copy/open actions, notes |
-| `NotesEditor.swift` | `NSTextView` wrapper and Markdown highlighter |
+| `ImportSheet.swift` | Import BibTeX sheet with the allocate-to-work picker |
+| `NotesEditor.swift` | `NSTextView` wrapper (Markdown notes, or plain text with `markdown: false`) and Markdown highlighter |
 | `AppModel.swift` | all window state and actions |
 | `Prefs.swift`, `SettingsView.swift` | preferences and the Settings window |
 | `Platform.swift` | pasteboard, Finder, text editor, markup → `AttributedString` |
@@ -206,9 +207,12 @@ ready*; they need UI.
 
 1. **Authors and Outlets** as sidebar-driven lists or a second window: star
    toggles, "Show works", outlet nicknames and J-Flags (*core ready*).
-2. **Import BibTeX** from a file, the pasteboard, or by dropping `.bib` files
-   on the window, with the duplicate-DOI report and allocate-to-work step
-   (*core ready*).
+2. ~~Import BibTeX~~ — done: `ImportSheet` via File → Import BibTeX… (⌘I), the
+   toolbar, or dropping `.bib` files on the window. The sheet preselects the
+   work shown in the sidebar (`AppModel.currentWorkKey`); after import,
+   `AppModel.performImport` allocates, switches to that work, selects the first
+   new record, and reports skipped entries (duplicate DOI or existing ID) in
+   an alert, or else shows a transient subtitle message.
 3. **My Works**: create, edit (name, cites, published_as), allocate records via
    the context menu and drag and drop from the table (*core ready*).
 4. **Rename Bibliotheca ID** (F2 / Return in the table) and **Validate**

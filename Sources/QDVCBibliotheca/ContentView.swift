@@ -25,7 +25,19 @@ struct ContentView: View {
                 }
                 .searchable(text: $model.searchText, placement: .toolbar, prompt: "Filter")
                 .onChange(of: model.searchText) { model.refreshRows() }
+                .dropDestination(for: URL.self) { urls, _ in
+                    model.beginImport(files: urls)
+                }
                 .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button {
+                            model.beginImport()
+                        } label: {
+                            Label("Import BibTeX", systemImage: "square.and.arrow.down")
+                        }
+                        .help("Import BibTeX (\u{2318}I)")
+                        .disabled(model.isLoading)
+                    }
                     ToolbarItem(placement: .primaryAction) {
                         Button {
                             model.refresh()
@@ -48,6 +60,10 @@ struct ContentView: View {
             }
         }
         .quickLookPreview($model.quickLookURL)
+        .sheet(item: $model.importRequest) { request in
+            ImportSheet(request: request)
+                .environment(model)
+        }
         .alert(model.alert?.title ?? "",
                isPresented: Binding(get: { model.alert != nil },
                                     set: { if !$0 { model.alert = nil } })) {

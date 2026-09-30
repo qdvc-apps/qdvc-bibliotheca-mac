@@ -24,6 +24,16 @@ struct AlertInfo: Identifiable {
     var message: String
 }
 
+/// What the Import BibTeX sheet opens with.
+struct ImportRequest: Identifiable {
+    let id = UUID()
+    var text: String = ""
+    /// Where the text came from (a file name), shown in the sheet.
+    var sourceName: String?
+    /// The work to preselect in "Allocate imported records to".
+    var workKey: String?
+}
+
 struct InTextCitations: Equatable {
     var parenthetical: String
     var narrative: String
@@ -65,6 +75,12 @@ final class AppModel {
 
     var quickLookURL: URL?
 
+    // Import
+    var importRequest: ImportRequest?
+    /// A short-lived message shown in the window subtitle.
+    private(set) var statusMessage: String?
+    @ObservationIgnored private var statusTask: Task<Void, Never>?
+
     /// Bumped whenever a record's full-text links change. `Record` itself is not
     /// observable, so views that show link state read this to re-render.
     private(set) var fulltextRevision = 0
@@ -81,6 +97,7 @@ final class AppModel {
     }
 
     var statusLine: String {
+        if let statusMessage { return statusMessage }
         guard let ws = workspace else { return "" }
         let total = ws.records.count
         return rows.count == total ? "\(total) records" : "\(rows.count) of \(total) records"
@@ -137,6 +154,7 @@ final class AppModel {
 
     func closeWorkspace() {
         flushNotes()
+        importRequest = nil
         workspace = nil
         selectedID = nil
         sidebarSelection = .all
@@ -226,6 +244,114 @@ final class AppModel {
     private func removeRecent(_ path: String) {
         recentWorkspaces.removeAll { $0 == path }
         Prefs.recentWorkspaces = recentWorkspaces
+    }
+
+    // MARK: - Import
+
+    /// The work currently shown in the sidebar, if any.
+    var currentWorkKey: String? {
+        if case .work(let key) = sidebarSelection { return key }
+        return nil
+    }
+
+    /// Open the Import BibTeX sheet, preselecting the work being viewed.
+    func beginImport(text: String = "", sourceName: String? = nil) {
+        guard workspace != nil, !isLoading else { return }
+        importRequest = ImportRequest(text: text, sourceName: sourceName, workKey: currentWorkKey)
+    }
+
+    /// Open the sheet pre-filled with dropped `.bib` files. Returns false when
+    /// none of the URLs is a readable `.bib` file.
+    @discardableResult
+    func beginImport(files: [URL]) -> Bool {
+        let bibs = files.filter { $0.pathExtension.lowercased() == "bib" }
+        let texts = bibs.compactMap { url -> String? in
+            guard let data = try? Data(contentsOf: url) else { return nil }
+            return String(decoding: data, as: UTF8.self)
+        }
+        guard workspace != nil, !texts.isEmpty else { return false }
+        let name = bibs.count == 1 ? bibs[0].lastPathComponent : "\(bibs.count) files"
+        beginImport(text: texts.joined(separator: "\n\n"), sourceName: name)
+        return true
+    }
+
+    /// Import the sheet's BibTeX, optionally allocating the new records to a
+    /// work, then show the result.
+    func performImport(text: String, allocateTo workKey: String?) {
+        guard let ws = workspace else { return }
+        importRequest = nil
+        let entryCount = BibTeX.splitEntries(text).count
+        let result: Workspace.ImportResult
+        do {
+            result = try ws.importBibText(text)
+        } catch {
+            alert = AlertInfo(title: "Import Failed", message: error.localizedDescription)
+            return
+        }
+
+        var allocated = 0
+        var allocationError: String?
+        if let key = workKey, ws.myWorks[key] != nil, !result.imported.isEmpty {
+            do {
+                allocated = try ws.allocateToWork(key, ids: result.imported)
+            } catch {
+                allocationError = error.localizedDescription
+            }
+        }
+
+        // Show the result: the work the records went to, with the first new
+        // record selected (falling back to All Records if the current filter
+        // would hide it).
+        refreshSidebar()
+        if allocated > 0, let key = workKey { sidebarSelection = .work(key) }
+        refreshRows()
+        let firstNew = result.imported.sorted { $0.lowercased() < $1.lowercased() }.first
+        if let firstNew {
+            if !rows.contains(where: { $0.id == firstNew }) {
+                sidebarSelection = .all
+                searchText = ""
+                refreshRows()
+            }
+            selectedID = firstNew
+        }
+
+        let n = result.imported.count
+        var summary = "Imported \(n) record\(n == 1 ? "" : "s")."
+        if allocated > 0, let key = workKey, let work = ws.myWorks[key] {
+            summary += " Allocated \(allocated) to \u{201C}\(work.name)\u{201D}."
+        }
+        let skippedExisting = max(0, entryCount - n - result.skippedDOIs.count)
+
+        var problems: [String] = []
+        if !result.skippedDOIs.isEmpty {
+            problems.append("Skipped because their DOI is already in the library:")
+            problems += result.skippedDOIs.map {
+                "\u{2022} \($0.citationKey): DOI \($0.doi) is used by \($0.existingID)"
+            }
+        }
+        if skippedExisting > 0 {
+            problems.append("Skipped \(skippedExisting) entr\(skippedExisting == 1 ? "y" : "ies") whose Bibliotheca ID already exists (or that have no citation key).")
+        }
+        if let allocationError {
+            problems.append("The records were imported but could not be allocated: \(allocationError)")
+        }
+
+        if problems.isEmpty && n > 0 {
+            showStatus(summary)
+        } else {
+            alert = AlertInfo(title: n > 0 ? "Import Finished with Warnings" : "Nothing Imported",
+                              message: ([summary] + problems).joined(separator: "\n\n"))
+        }
+    }
+
+    private func showStatus(_ message: String) {
+        statusMessage = message
+        statusTask?.cancel()
+        statusTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(6))
+            guard !Task.isCancelled else { return }
+            self?.statusMessage = nil
+        }
     }
 
     // MARK: - Pane 1: sidebar
