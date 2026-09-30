@@ -1,0 +1,1223 @@
+{
+ "bib": [
+  {
+   "name": "article_doi_url",
+   "text": "@article{SmithJones2025_JBIB,\n  author = {Smith, John Andrew and Jones, Beatrice},\n  title = {{Knowledge Work} in the Age of Agents},\n  journal = {Journal of Bibliotheca},\n  year = {2025},\n  volume = {12},\n  number = {3},\n  pages = {101--120},\n  doi = {https://doi.org/10.1234/JBIB.2025.003}\n}\n",
+   "parsed": {
+    "entry_type": "article",
+    "citation_key": "SmithJones2025_JBIB",
+    "fields": {
+     "author": "Smith, John Andrew and Jones, Beatrice",
+     "title": "{Knowledge Work} in the Age of Agents",
+     "journal": "Journal of Bibliotheca",
+     "year": "2025",
+     "volume": "12",
+     "number": "3",
+     "pages": "101--120",
+     "doi": "https://doi.org/10.1234/JBIB.2025.003"
+    }
+   },
+   "index": {
+    "type_label": "Journal article",
+    "author": "Smith, John Andrew and Jones, Beatrice",
+    "year": "2025",
+    "title": "Knowledge Work in the Age of Agents",
+    "journal": "Journal of Bibliotheca",
+    "doi": "10.1234/JBIB.2025.003"
+   },
+   "apa_markup": "Smith, J. A., &amp; Jones, B. (2025). Knowledge Work in the Age of Agents. <i>Journal of Bibliotheca</i>, <i>12</i>(3), 101–120. https://doi.org/10.1234/JBIB.2025.003",
+   "apa_plain": "Smith, J. A., & Jones, B. (2025). Knowledge Work in the Age of Agents. Journal of Bibliotheca, 12(3), 101–120. https://doi.org/10.1234/JBIB.2025.003",
+   "acis_markup": "Smith, J. A., and Jones, B. 2025b. “Knowledge Work in the Age of Agents,” <i>Journal of Bibliotheca</i> (12:3), pp. 101-120 (doi:10.1234/JBIB.2025.003).",
+   "acis_plain": "Smith, J. A., and Jones, B. 2025. “Knowledge Work in the Age of Agents,” Journal of Bibliotheca (12:3), pp. 101-120 (doi:10.1234/JBIB.2025.003).",
+   "acis_in_text": "(Smith and Jones 2025a)",
+   "acis_in_text_narrative": "Smith and Jones (2025)",
+   "apa_author_list": "Smith, J. A., & Jones, B.",
+   "acis_author_list": "Smith, J. A., and Jones, B."
+  },
+  {
+   "name": "article_three_authors_no_pages",
+   "text": "@Article{Thompson2026,\n  author = \"Thompson, Ann and Lee, Bo and O'Brien, Ciara\",\n  title = \"Why 'Trust' Matters: A & B\",\n  journaltitle = {MIS Quarterly},\n  year = 2026,\n  volume = 50,\n  doi = {10.25300/MISQ/2026/1}\n}\n",
+   "parsed": {
+    "entry_type": "article",
+    "citation_key": "Thompson2026",
+    "fields": {
+     "author": "Thompson, Ann and Lee, Bo and O'Brien, Ciara",
+     "title": "Why 'Trust' Matters: A & B",
+     "journaltitle": "MIS Quarterly",
+     "year": "2026",
+     "volume": "50",
+     "doi": "10.25300/MISQ/2026/1"
+    }
+   },
+   "index": {
+    "type_label": "Journal article",
+    "author": "Thompson, Ann and Lee, Bo and O'Brien, Ciara",
+    "year": "2026",
+    "title": "Why 'Trust' Matters: A & B",
+    "journal": "MIS Quarterly",
+    "doi": "10.25300/MISQ/2026/1"
+   },
+   "apa_markup": "Thompson, A., Lee, B., &amp; O&#x27;Brien, C. (2026). Why &#x27;Trust&#x27; Matters: A &amp; B. <i>MIS Quarterly</i>, <i>50</i>. https://doi.org/10.25300/MISQ/2026/1",
+   "apa_plain": "Thompson, A., Lee, B., & O'Brien, C. (2026). Why 'Trust' Matters: A & B. MIS Quarterly, 50. https://doi.org/10.25300/MISQ/2026/1",
+   "acis_markup": "Thompson, A., Lee, B., and O'Brien, C. 2026b. “Why 'Trust' Matters: A &amp; B,” <i>MIS Quarterly</i> (50) (doi:10.25300/MISQ/2026/1)",
+   "acis_plain": "Thompson, A., Lee, B., and O'Brien, C. 2026. “Why 'Trust' Matters: A & B,” MIS Quarterly (50) (doi:10.25300/MISQ/2026/1)",
+   "acis_in_text": "(Thompson et al. 2026a)",
+   "acis_in_text_narrative": "Thompson et al. (2026)",
+   "apa_author_list": "Thompson, A., Lee, B., & O'Brien, C.",
+   "acis_author_list": "Thompson, A., Lee, B., and O'Brien, C."
+  },
+  {
+   "name": "article_given_first_names",
+   "text": "@article{Muller2019,\n  author = {J\\\"urgen M{\\\"u}ller and Mary-Jane van der Berg},\n  title = {Sociomateriality Revisited},\n  journal = {Information Systems Journal},\n  year = {2019},\n  pages = {1-20}\n}\n",
+   "parsed": {
+    "entry_type": "article",
+    "citation_key": "Muller2019",
+    "fields": {
+     "author": "J\\\"urgen M{\\\"u}ller and Mary-Jane van der Berg",
+     "title": "Sociomateriality Revisited",
+     "journal": "Information Systems Journal",
+     "year": "2019",
+     "pages": "1-20"
+    }
+   },
+   "index": {
+    "type_label": "Journal article",
+    "author": "J\\\"urgen M\\\"uller and Mary-Jane van der Berg",
+    "year": "2019",
+    "title": "Sociomateriality Revisited",
+    "journal": "Information Systems Journal",
+    "doi": ""
+   },
+   "apa_markup": "M\\&quot;uller, J., &amp; Berg, M. J. V. D. (2019). Sociomateriality Revisited. <i>Information Systems Journal</i>, 1-20.",
+   "apa_plain": "M\\\"uller, J., & Berg, M. J. V. D. (2019). Sociomateriality Revisited. Information Systems Journal, 1-20.",
+   "acis_markup": "M\\\"uller, J., and Berg, M. J. V. D. 2019b. “Sociomateriality Revisited,” <i>Information Systems Journal</i>, pp. 1-20.",
+   "acis_plain": "M\\\"uller, J., and Berg, M. J. V. D. 2019. “Sociomateriality Revisited,” Information Systems Journal, pp. 1-20.",
+   "acis_in_text": "(M\\\"uller and Berg 2019a)",
+   "acis_in_text_narrative": "M\\\"uller and Berg (2019)",
+   "apa_author_list": "M\\\"uller, J., & Berg, M. J. V. D.",
+   "acis_author_list": "M\\\"uller, J., and Berg, M. J. V. D."
+  },
+  {
+   "name": "article_no_volume_no_doi",
+   "text": "@article{Solo2020,\n  author = {Solo, Han},\n  title = {Smuggling as Information Systems},\n  journal = {Kessel Run Review},\n  year = {2020}\n}\n",
+   "parsed": {
+    "entry_type": "article",
+    "citation_key": "Solo2020",
+    "fields": {
+     "author": "Solo, Han",
+     "title": "Smuggling as Information Systems",
+     "journal": "Kessel Run Review",
+     "year": "2020"
+    }
+   },
+   "index": {
+    "type_label": "Journal article",
+    "author": "Solo, Han",
+    "year": "2020",
+    "title": "Smuggling as Information Systems",
+    "journal": "Kessel Run Review",
+    "doi": ""
+   },
+   "apa_markup": "Solo, H. (2020). Smuggling as Information Systems. <i>Kessel Run Review</i>.",
+   "apa_plain": "Solo, H. (2020). Smuggling as Information Systems. Kessel Run Review.",
+   "acis_markup": "Solo, H. 2020b. “Smuggling as Information Systems,” <i>Kessel Run Review</i>.",
+   "acis_plain": "Solo, H. 2020. “Smuggling as Information Systems,” Kessel Run Review.",
+   "acis_in_text": "(Solo 2020a)",
+   "acis_in_text_narrative": "Solo (2020)",
+   "apa_author_list": "Solo, H.",
+   "acis_author_list": "Solo, H."
+  },
+  {
+   "name": "inproceedings",
+   "text": "@inproceedings{Chen2024_ICIS,\n  author = {Chen, Wei and Patel, Ravi Kumar},\n  title = {Digital Twins for Public Health},\n  booktitle = {Proceedings of the 45th International Conference on Information Systems},\n  address = {Bangkok, Thailand},\n  pages = {1--15},\n  year = {2024},\n  doi = {10.5555/icis.2024.7}\n}\n",
+   "parsed": {
+    "entry_type": "inproceedings",
+    "citation_key": "Chen2024_ICIS",
+    "fields": {
+     "author": "Chen, Wei and Patel, Ravi Kumar",
+     "title": "Digital Twins for Public Health",
+     "booktitle": "Proceedings of the 45th International Conference on Information Systems",
+     "address": "Bangkok, Thailand",
+     "pages": "1--15",
+     "year": "2024",
+     "doi": "10.5555/icis.2024.7"
+    }
+   },
+   "index": {
+    "type_label": "Proceedings",
+    "author": "Chen, Wei and Patel, Ravi Kumar",
+    "year": "2024",
+    "title": "Digital Twins for Public Health",
+    "journal": "Proceedings of the 45th International Conference on Information Systems",
+    "doi": "10.5555/icis.2024.7"
+   },
+   "apa_markup": "Chen, W., &amp; Patel, R. K. (2024). Digital Twins for Public Health. In <i>Proceedings of the 45th International Conference on Information Systems</i> (pp. 1–15). https://doi.org/10.5555/icis.2024.7",
+   "apa_plain": "Chen, W., & Patel, R. K. (2024). Digital Twins for Public Health. In Proceedings of the 45th International Conference on Information Systems (pp. 1–15). https://doi.org/10.5555/icis.2024.7",
+   "acis_markup": "Chen, W., and Patel, R. K. 2024b. “Digital Twins for Public Health,” <i>Proceedings of the 45th International Conference on Information Systems</i>. Bangkok, Thailand.",
+   "acis_plain": "Chen, W., and Patel, R. K. 2024. “Digital Twins for Public Health,” Proceedings of the 45th International Conference on Information Systems. Bangkok, Thailand.",
+   "acis_in_text": "(Chen and Patel 2024a)",
+   "acis_in_text_narrative": "Chen and Patel (2024)",
+   "apa_author_list": "Chen, W., & Patel, R. K.",
+   "acis_author_list": "Chen, W., and Patel, R. K."
+  },
+  {
+   "name": "incollection_proceedings_of",
+   "text": "@incollection{Garcia2023,\n  author = {Garcia, Lucia},\n  title = {Platform Governance},\n  booktitle = {Proceedings of the Australasian Conference on Information Systems},\n  year = {2023}\n}\n",
+   "parsed": {
+    "entry_type": "incollection",
+    "citation_key": "Garcia2023",
+    "fields": {
+     "author": "Garcia, Lucia",
+     "title": "Platform Governance",
+     "booktitle": "Proceedings of the Australasian Conference on Information Systems",
+     "year": "2023"
+    }
+   },
+   "index": {
+    "type_label": "Proceedings",
+    "author": "Garcia, Lucia",
+    "year": "2023",
+    "title": "Platform Governance",
+    "journal": "Proceedings of the Australasian Conference on Information Systems",
+    "doi": ""
+   },
+   "apa_markup": "Garcia, L. (2023). Platform Governance. In <i>Proceedings of the Australasian Conference on Information Systems</i>.",
+   "apa_plain": "Garcia, L. (2023). Platform Governance. In Proceedings of the Australasian Conference on Information Systems.",
+   "acis_markup": "Garcia, L. 2023b. “Platform Governance,” <i>Proceedings of the Australasian Conference on Information Systems</i>.",
+   "acis_plain": "Garcia, L. 2023. “Platform Governance,” Proceedings of the Australasian Conference on Information Systems.",
+   "acis_in_text": "(Garcia 2023a)",
+   "acis_in_text_narrative": "Garcia (2023)",
+   "apa_author_list": "Garcia, L.",
+   "acis_author_list": "Garcia, L."
+  },
+  {
+   "name": "incollection_chapter",
+   "text": "@incollection{Walsham1995,\n  author = {Walsham, Geoff},\n  title = {Interpretive Case Studies in IS Research},\n  booktitle = {Information Systems Research: Contemporary Approaches},\n  editor = {Mumford, Enid and Hirschheim, Rudy},\n  pages = {23--45},\n  publisher = {North-Holland},\n  address = {Amsterdam},\n  year = {1995}\n}\n",
+   "parsed": {
+    "entry_type": "incollection",
+    "citation_key": "Walsham1995",
+    "fields": {
+     "author": "Walsham, Geoff",
+     "title": "Interpretive Case Studies in IS Research",
+     "booktitle": "Information Systems Research: Contemporary Approaches",
+     "editor": "Mumford, Enid and Hirschheim, Rudy",
+     "pages": "23--45",
+     "publisher": "North-Holland",
+     "address": "Amsterdam",
+     "year": "1995"
+    }
+   },
+   "index": {
+    "type_label": "Book chapter",
+    "author": "Walsham, Geoff",
+    "year": "1995",
+    "title": "Interpretive Case Studies in IS Research",
+    "journal": "Information Systems Research: Contemporary Approaches",
+    "doi": ""
+   },
+   "apa_markup": "Walsham, G. (1995). Interpretive Case Studies in IS Research. In Mumford, E., &amp; Hirschheim, R. (Ed.), <i>Information Systems Research: Contemporary Approaches</i> (pp. 23–45). North-Holland.",
+   "apa_plain": "Walsham, G. (1995). Interpretive Case Studies in IS Research. In Mumford, E., & Hirschheim, R. (Ed.), Information Systems Research: Contemporary Approaches (pp. 23–45). North-Holland.",
+   "acis_markup": "Walsham, G. 1995b. “Interpretive Case Studies in IS Research,” in Mumford, E., and Hirschheim, R. (ed.), <i>Information Systems Research: Contemporary Approaches</i>, pp. 23-45. Amsterdam: North-Holland.",
+   "acis_plain": "Walsham, G. 1995. “Interpretive Case Studies in IS Research,” in Mumford, E., and Hirschheim, R. (ed.), Information Systems Research: Contemporary Approaches, pp. 23-45. Amsterdam: North-Holland.",
+   "acis_in_text": "(Walsham 1995a)",
+   "acis_in_text_narrative": "Walsham (1995)",
+   "apa_author_list": "Walsham, G.",
+   "acis_author_list": "Walsham, G."
+  },
+  {
+   "name": "book",
+   "text": "@book{Zuboff2019,\n  author = {Zuboff, Shoshana},\n  title = {The Age of Surveillance Capitalism},\n  edition = {2nd},\n  publisher = {PublicAffairs},\n  address = {New York},\n  year = {2019}\n}\n",
+   "parsed": {
+    "entry_type": "book",
+    "citation_key": "Zuboff2019",
+    "fields": {
+     "author": "Zuboff, Shoshana",
+     "title": "The Age of Surveillance Capitalism",
+     "edition": "2nd",
+     "publisher": "PublicAffairs",
+     "address": "New York",
+     "year": "2019"
+    }
+   },
+   "index": {
+    "type_label": "Book",
+    "author": "Zuboff, Shoshana",
+    "year": "2019",
+    "title": "The Age of Surveillance Capitalism",
+    "journal": "",
+    "doi": ""
+   },
+   "apa_markup": "Zuboff, S. (2019). <i>The Age of Surveillance Capitalism</i> (2nd ed.). PublicAffairs.",
+   "apa_plain": "Zuboff, S. (2019). The Age of Surveillance Capitalism (2nd ed.). PublicAffairs.",
+   "acis_markup": "Zuboff, S. 2019b. <i>The Age of Surveillance Capitalism</i> (2nd ed.). New York: PublicAffairs.",
+   "acis_plain": "Zuboff, S. 2019. The Age of Surveillance Capitalism (2nd ed.). New York: PublicAffairs.",
+   "acis_in_text": "(Zuboff 2019a)",
+   "acis_in_text_narrative": "Zuboff (2019)",
+   "apa_author_list": "Zuboff, S.",
+   "acis_author_list": "Zuboff, S."
+  },
+  {
+   "name": "book_editor_only",
+   "text": "@book{Edited2018,\n  editor = {Orlikowski, Wanda J.},\n  title = {Edited Volume on Practice},\n  publisher = {Oxford University Press},\n  date = {2018-05-01}\n}\n",
+   "parsed": {
+    "entry_type": "book",
+    "citation_key": "Edited2018",
+    "fields": {
+     "editor": "Orlikowski, Wanda J.",
+     "title": "Edited Volume on Practice",
+     "publisher": "Oxford University Press",
+     "date": "2018-05-01"
+    }
+   },
+   "index": {
+    "type_label": "Book",
+    "author": "Orlikowski, Wanda J.",
+    "year": "",
+    "title": "Edited Volume on Practice",
+    "journal": "",
+    "doi": ""
+   },
+   "apa_markup": "Orlikowski, W. J. (2018). <i>Edited Volume on Practice</i>. Oxford University Press.",
+   "apa_plain": "Orlikowski, W. J. (2018). Edited Volume on Practice. Oxford University Press.",
+   "acis_markup": "Orlikowski, W. J. 2018b. <i>Edited Volume on Practice</i>. Oxford University Press.",
+   "acis_plain": "Orlikowski, W. J. 2018. Edited Volume on Practice. Oxford University Press.",
+   "acis_in_text": "(Orlikowski 2018a)",
+   "acis_in_text_narrative": "Orlikowski (2018)",
+   "apa_author_list": "",
+   "acis_author_list": ""
+  },
+  {
+   "name": "online",
+   "text": "@online{ACIS2026Site,\n  author = {{Association for Information Systems}},\n  title = {ACIS 2026 Call for Papers},\n  url = {https://acis2026.example.org/cfp},\n  urldate = {2026-07-10},\n  organization = {AIS},\n  year = {2026}\n}\n",
+   "parsed": {
+    "entry_type": "online",
+    "citation_key": "ACIS2026Site",
+    "fields": {
+     "author": "{Association for Information Systems}",
+     "title": "ACIS 2026 Call for Papers",
+     "url": "https://acis2026.example.org/cfp",
+     "urldate": "2026-07-10",
+     "organization": "AIS",
+     "year": "2026"
+    }
+   },
+   "index": {
+    "type_label": "Webpage",
+    "author": "Association for Information Systems",
+    "year": "2026",
+    "title": "ACIS 2026 Call for Papers",
+    "journal": "",
+    "doi": ""
+   },
+   "apa_markup": "Systems, A. F. I. (2026). <i>ACIS 2026 Call for Papers</i>. AIS. https://acis2026.example.org/cfp",
+   "apa_plain": "Systems, A. F. I. (2026). ACIS 2026 Call for Papers. AIS. https://acis2026.example.org/cfp",
+   "acis_markup": "Systems, A. F. I. 2026b. “ACIS 2026 Call for Papers.” (https://acis2026.example.org/cfp, accessed 10 July 2026).",
+   "acis_plain": "Systems, A. F. I. 2026. “ACIS 2026 Call for Papers.” (https://acis2026.example.org/cfp, accessed 10 July 2026).",
+   "acis_in_text": "(Systems 2026a)",
+   "acis_in_text_narrative": "Systems (2026)",
+   "apa_author_list": "Systems, A. F. I.",
+   "acis_author_list": "Systems, A. F. I."
+  },
+  {
+   "name": "misc_no_author_no_year",
+   "text": "@misc{Anon,\n  title = {An Untitled Working Paper},\n  howpublished = {Mimeo}\n}\n",
+   "parsed": {
+    "entry_type": "misc",
+    "citation_key": "Anon",
+    "fields": {
+     "title": "An Untitled Working Paper",
+     "howpublished": "Mimeo"
+    }
+   },
+   "index": {
+    "type_label": "Other",
+    "author": "",
+    "year": "",
+    "title": "An Untitled Working Paper",
+    "journal": "",
+    "doi": ""
+   },
+   "apa_markup": "(n.d.). <i>An Untitled Working Paper</i>. Mimeo.",
+   "apa_plain": "(n.d.). An Untitled Working Paper. Mimeo.",
+   "acis_markup": "n.d. “An Untitled Working Paper.” (Mimeo).",
+   "acis_plain": "n.d. “An Untitled Working Paper.” (Mimeo).",
+   "acis_in_text": "(An n.d.)",
+   "acis_in_text_narrative": "An (n.d.)",
+   "apa_author_list": "",
+   "acis_author_list": ""
+  },
+  {
+   "name": "crlf_line_endings",
+   "text": "@article{CRLF2021,\r\n  author = {Doe, Jane},\r\n  title = {Windows Line Endings},\r\n  journal = {Journal of Portability},\r\n  year = {2021}\r\n}\r\n",
+   "parsed": {
+    "entry_type": "article",
+    "citation_key": "CRLF2021",
+    "fields": {
+     "author": "Doe, Jane",
+     "title": "Windows Line Endings",
+     "journal": "Journal of Portability",
+     "year": "2021"
+    }
+   },
+   "index": {
+    "type_label": "Journal article",
+    "author": "Doe, Jane",
+    "year": "2021",
+    "title": "Windows Line Endings",
+    "journal": "Journal of Portability",
+    "doi": ""
+   },
+   "apa_markup": "Doe, J. (2021). Windows Line Endings. <i>Journal of Portability</i>.",
+   "apa_plain": "Doe, J. (2021). Windows Line Endings. Journal of Portability.",
+   "acis_markup": "Doe, J. 2021b. “Windows Line Endings,” <i>Journal of Portability</i>.",
+   "acis_plain": "Doe, J. 2021. “Windows Line Endings,” Journal of Portability.",
+   "acis_in_text": "(Doe 2021a)",
+   "acis_in_text_narrative": "Doe (2021)",
+   "apa_author_list": "Doe, J.",
+   "acis_author_list": "Doe, J."
+  },
+  {
+   "name": "many_authors",
+   "text": "@article{Big2022,\n  author = {Author1, A. and Author2, A. and Author3, A. and Author4, A. and Author5, A. and Author6, A. and Author7, A. and Author8, A. and Author9, A. and Author10, A. and Author11, A. and Author12, A. and Author13, A. and Author14, A. and Author15, A. and Author16, A. and Author17, A. and Author18, A. and Author19, A. and Author20, A. and Author21, A. and Author22, A.},\n  title = {Big Science},\n  journal = {Nature},\n  year = {2022}\n}\n",
+   "parsed": {
+    "entry_type": "article",
+    "citation_key": "Big2022",
+    "fields": {
+     "author": "Author1, A. and Author2, A. and Author3, A. and Author4, A. and Author5, A. and Author6, A. and Author7, A. and Author8, A. and Author9, A. and Author10, A. and Author11, A. and Author12, A. and Author13, A. and Author14, A. and Author15, A. and Author16, A. and Author17, A. and Author18, A. and Author19, A. and Author20, A. and Author21, A. and Author22, A.",
+     "title": "Big Science",
+     "journal": "Nature",
+     "year": "2022"
+    }
+   },
+   "index": {
+    "type_label": "Journal article",
+    "author": "Author1, A. and Author2, A. and Author3, A. and Author4, A. and Author5, A. and Author6, A. and Author7, A. and Author8, A. and Author9, A. and Author10, A. and Author11, A. and Author12, A. and Author13, A. and Author14, A. and Author15, A. and Author16, A. and Author17, A. and Author18, A. and Author19, A. and Author20, A. and Author21, A. and Author22, A.",
+    "year": "2022",
+    "title": "Big Science",
+    "journal": "Nature",
+    "doi": ""
+   },
+   "apa_markup": "Author1, A., Author2, A., Author3, A., Author4, A., Author5, A., Author6, A., Author7, A., Author8, A., Author9, A., Author10, A., Author11, A., Author12, A., Author13, A., Author14, A., Author15, A., Author16, A., Author17, A., Author18, A., Author19, A.,.. Author22, A. (2022). Big Science. <i>Nature</i>.",
+   "apa_plain": "Author1, A., Author2, A., Author3, A., Author4, A., Author5, A., Author6, A., Author7, A., Author8, A., Author9, A., Author10, A., Author11, A., Author12, A., Author13, A., Author14, A., Author15, A., Author16, A., Author17, A., Author18, A., Author19, A.,.. Author22, A. (2022). Big Science. Nature.",
+   "acis_markup": "Author1, A., Author2, A., Author3, A., Author4, A., Author5, A., Author6, A., Author7, A., Author8, A., Author9, A., Author10, A., Author11, A., Author12, A., Author13, A., Author14, A., Author15, A., Author16, A., Author17, A., Author18, A., Author19, A., Author20, A., Author21, A., and Author22, A. 2022b. “Big Science,” <i>Nature</i>.",
+   "acis_plain": "Author1, A., Author2, A., Author3, A., Author4, A., Author5, A., Author6, A., Author7, A., Author8, A., Author9, A., Author10, A., Author11, A., Author12, A., Author13, A., Author14, A., Author15, A., Author16, A., Author17, A., Author18, A., Author19, A., Author20, A., Author21, A., and Author22, A. 2022. “Big Science,” Nature.",
+   "acis_in_text": "(Author1 et al. 2022a)",
+   "acis_in_text_narrative": "Author1 et al. (2022)",
+   "apa_author_list": "Author1, A., Author2, A., Author3, A., Author4, A., Author5, A., Author6, A., Author7, A., Author8, A., Author9, A., Author10, A., Author11, A., Author12, A., Author13, A., Author14, A., Author15, A., Author16, A., Author17, A., Author18, A., Author19, A., . . . Author22, A.",
+   "acis_author_list": "Author1, A., Author2, A., Author3, A., Author4, A., Author5, A., Author6, A., Author7, A., Author8, A., Author9, A., Author10, A., Author11, A., Author12, A., Author13, A., Author14, A., Author15, A., Author16, A., Author17, A., Author18, A., Author19, A., Author20, A., Author21, A., and Author22, A."
+  },
+  {
+   "name": "unbalanced_and_bare",
+   "text": "@article{Bare2010,\n  author = {Bare, Value},\n  year = 2010,\n  month = jan,\n  title = {Unclosed {brace\n",
+   "parsed": {
+    "entry_type": "article",
+    "citation_key": "Bare2010",
+    "fields": {
+     "author": "Bare, Value",
+     "year": "2010",
+     "month": "jan",
+     "title": "Unclosed {brace"
+    }
+   },
+   "index": {
+    "type_label": "Journal article",
+    "author": "Bare, Value",
+    "year": "2010",
+    "title": "Unclosed brace",
+    "journal": "",
+    "doi": ""
+   },
+   "apa_markup": "Bare, V. (2010). Unclosed brace.",
+   "apa_plain": "Bare, V. (2010). Unclosed brace.",
+   "acis_markup": "Bare, V. 2010b. “Unclosed brace,”",
+   "acis_plain": "Bare, V. 2010. “Unclosed brace,”",
+   "acis_in_text": "(Bare 2010a)",
+   "acis_in_text_narrative": "Bare (2010)",
+   "apa_author_list": "Bare, V.",
+   "acis_author_list": "Bare, V."
+  }
+ ],
+ "split": [
+  {
+   "text": "% a comment line\n@string{jbib = \"Journal of Bibliotheca\"}\n@article{A2020, title = {One {Nested} Title}, year = {2020}}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n@book{B2021,\n  title = {Two},\n  year = {2021}\n}\n@comment{ignored}\n@misc{ C2022 , title={Three}}\n",
+   "entries": [
+    {
+     "text": "@article{A2020, title = {One {Nested} Title}, year = {2020}}",
+     "key": "A2020"
+    },
+    {
+     "text": "@book{B2021,\n  title = {Two},\n  year = {2021}\n}",
+     "key": "B2021"
+    },
+    {
+     "text": "@misc{ C2022 , title={Three}}",
+     "key": "C2022"
+    }
+   ]
+  },
+  {
+   "text": "no entries here, just text with an @ sign",
+   "entries": []
+  },
+  {
+   "text": "@article{NoComma}",
+   "entries": []
+  }
+ ],
+ "naming": [
+  {
+   "input": "",
+   "sanitise_id": "",
+   "sanitise_stem": "",
+   "slugify_outlet": "",
+   "id_suffix": "",
+   "normalise_doi": ""
+  },
+  {
+   "input": "  Smith Jones 2025 ",
+   "sanitise_id": "Smith_Jones_2025",
+   "sanitise_stem": "Smith-Jones-2025",
+   "slugify_outlet": "smith-jones-2025",
+   "id_suffix": "",
+   "normalise_doi": "Smith Jones 2025"
+  },
+  {
+   "input": "Smith&Jones:2025/JBIB",
+   "sanitise_id": "SmithJones2025JBIB",
+   "sanitise_stem": "SmithJones2025JBIB",
+   "slugify_outlet": "smith-jones-2025-jbib",
+   "id_suffix": "",
+   "normalise_doi": "Smith&Jones:2025/JBIB"
+  },
+  {
+   "input": "__weird--",
+   "sanitise_id": "weird",
+   "sanitise_stem": "weird",
+   "slugify_outlet": "weird",
+   "id_suffix": "weird--",
+   "normalise_doi": "__weird--"
+  },
+  {
+   "input": "Ünïcödé Name",
+   "sanitise_id": "ncd_Name",
+   "sanitise_stem": "ncd-Name",
+   "slugify_outlet": "n-c-d-name",
+   "id_suffix": "",
+   "normalise_doi": "Ünïcödé Name"
+  },
+  {
+   "input": "A B\tC",
+   "sanitise_id": "A_B_C",
+   "sanitise_stem": "A-B-C",
+   "slugify_outlet": "a-b-c",
+   "id_suffix": "",
+   "normalise_doi": "A B\tC"
+  },
+  {
+   "input": "SmithJones2025_JBIB",
+   "sanitise_id": "SmithJones2025_JBIB",
+   "sanitise_stem": "SmithJones2025_JBIB",
+   "slugify_outlet": "smithjones2025-jbib",
+   "id_suffix": "JBIB",
+   "normalise_doi": "SmithJones2025_JBIB"
+  },
+  {
+   "input": "NoSuffix",
+   "sanitise_id": "NoSuffix",
+   "sanitise_stem": "NoSuffix",
+   "slugify_outlet": "nosuffix",
+   "id_suffix": "",
+   "normalise_doi": "NoSuffix"
+  },
+  {
+   "input": "Trailing_",
+   "sanitise_id": "Trailing",
+   "sanitise_stem": "Trailing",
+   "slugify_outlet": "trailing",
+   "id_suffix": "",
+   "normalise_doi": "Trailing_"
+  },
+  {
+   "input": "Journal of Bibliotheca",
+   "sanitise_id": "Journal_of_Bibliotheca",
+   "sanitise_stem": "Journal-of-Bibliotheca",
+   "slugify_outlet": "journal-of-bibliotheca",
+   "id_suffix": "",
+   "normalise_doi": "Journal of Bibliotheca"
+  },
+  {
+   "input": "MIS Quarterly (MISQ)",
+   "sanitise_id": "MIS_Quarterly_MISQ",
+   "sanitise_stem": "MIS-Quarterly-MISQ",
+   "slugify_outlet": "mis-quarterly-misq",
+   "id_suffix": "",
+   "normalise_doi": "MIS Quarterly (MISQ)"
+  },
+  {
+   "input": "  --Proc. of ICIS--  ",
+   "sanitise_id": "Proc_of_ICIS",
+   "sanitise_stem": "Proc-of-ICIS",
+   "slugify_outlet": "proc-of-icis",
+   "id_suffix": "",
+   "normalise_doi": "--Proc. of ICIS--"
+  },
+  {
+   "input": "https://doi.org/10.1/ABC",
+   "sanitise_id": "httpsdoiorg101ABC",
+   "sanitise_stem": "httpsdoiorg101ABC",
+   "slugify_outlet": "https-doi-org-10-1-abc",
+   "id_suffix": "",
+   "normalise_doi": "10.1/ABC"
+  },
+  {
+   "input": "http://dx.doi.org/10.2/x",
+   "sanitise_id": "httpdxdoiorg102x",
+   "sanitise_stem": "httpdxdoiorg102x",
+   "slugify_outlet": "http-dx-doi-org-10-2-x",
+   "id_suffix": "",
+   "normalise_doi": "10.2/x"
+  },
+  {
+   "input": "HTTPS://DOI.ORG/10.3/y",
+   "sanitise_id": "HTTPSDOIORG103y",
+   "sanitise_stem": "HTTPSDOIORG103y",
+   "slugify_outlet": "https-doi-org-10-3-y",
+   "id_suffix": "",
+   "normalise_doi": "10.3/y"
+  },
+  {
+   "input": " 10.4/z ",
+   "sanitise_id": "104z",
+   "sanitise_stem": "104z",
+   "slugify_outlet": "10-4-z",
+   "id_suffix": "",
+   "normalise_doi": "10.4/z"
+  }
+ ],
+ "author_ids": [
+  {
+   "surname": "Zuboff",
+   "given": "Shoshana",
+   "expected": "ZUBOFF_Shoshana"
+  },
+  {
+   "surname": "van der Berg",
+   "given": "mary-jane",
+   "expected": "VANDERBERG_MaryJane"
+  },
+  {
+   "surname": "O'Brien",
+   "given": "ciara",
+   "expected": "OBRIEN_Ciara"
+  },
+  {
+   "surname": "",
+   "given": "Nobody",
+   "expected": ""
+  },
+  {
+   "surname": "Smith",
+   "given": "",
+   "expected": "SMITH"
+  },
+  {
+   "surname": "Müller",
+   "given": "Jürgen",
+   "expected": "MLLER_Jrgen"
+  },
+  {
+   "surname": "!!!",
+   "given": "X",
+   "expected": ""
+  },
+  {
+   "surname": "Lee",
+   "given": "bo 1st",
+   "expected": "LEE_Bo1St"
+  }
+ ],
+ "nicknames": [
+  {
+   "input": "JBIB",
+   "valid": true
+  },
+  {
+   "input": "misq",
+   "valid": true
+  },
+  {
+   "input": "ISJ2",
+   "valid": false
+  },
+  {
+   "input": "",
+   "valid": false
+  },
+  {
+   "input": "J BIB",
+   "valid": false
+  },
+  {
+   "input": "J-BIB",
+   "valid": false
+  },
+  {
+   "input": "École",
+   "valid": false
+  }
+ ],
+ "name_splits": [
+  {
+   "input": "Smith, John Andrew",
+   "surname": "Smith",
+   "given": "John Andrew",
+   "surname_initials": "Smith, J. A."
+  },
+  {
+   "input": "John Andrew Smith",
+   "surname": "Smith",
+   "given": "John Andrew",
+   "surname_initials": "Smith, J. A."
+  },
+  {
+   "input": "{Association for Information Systems}",
+   "surname": "Systems",
+   "given": "Association for Information",
+   "surname_initials": "Systems, A. F. I."
+  },
+  {
+   "input": "Plato",
+   "surname": "Plato",
+   "given": "",
+   "surname_initials": "Plato"
+  },
+  {
+   "input": "de la Cruz, Juan",
+   "surname": "de la Cruz",
+   "given": "Juan",
+   "surname_initials": "de la Cruz, J."
+  },
+  {
+   "input": "  ",
+   "surname": "",
+   "given": "",
+   "surname_initials": ""
+  },
+  {
+   "input": "Mary-Jane van der Berg",
+   "surname": "Berg",
+   "given": "Mary-Jane van der",
+   "surname_initials": "Berg, M. J. V. D."
+  }
+ ],
+ "yaml_scalars": [
+  {
+   "value": "hello",
+   "expected": "hello"
+  },
+  {
+   "value": "FT50",
+   "expected": "FT50"
+  },
+  {
+   "value": "A*",
+   "expected": "A*"
+  },
+  {
+   "value": "*A",
+   "expected": "'*A'"
+  },
+  {
+   "value": "2025",
+   "expected": "'2025'"
+  },
+  {
+   "value": "10.1234/abc",
+   "expected": "10.1234/abc"
+  },
+  {
+   "value": "yes",
+   "expected": "'yes'"
+  },
+  {
+   "value": "No",
+   "expected": "'No'"
+  },
+  {
+   "value": "null",
+   "expected": "'null'"
+  },
+  {
+   "value": "",
+   "expected": "''"
+  },
+  {
+   "value": "a: b",
+   "expected": "'a: b'"
+  },
+  {
+   "value": "a:b",
+   "expected": "a:b"
+  },
+  {
+   "value": "x #y",
+   "expected": "'x #y'"
+  },
+  {
+   "value": "x#y",
+   "expected": "x#y"
+  },
+  {
+   "value": "#x",
+   "expected": "'#x'"
+  },
+  {
+   "value": "- x",
+   "expected": "'- x'"
+  },
+  {
+   "value": "S/Smith2025.pdf",
+   "expected": "S/Smith2025.pdf"
+  },
+  {
+   "value": "/Users/me/My Papers/x.pdf",
+   "expected": "/Users/me/My Papers/x.pdf"
+  },
+  {
+   "value": "O'Brien",
+   "expected": "O'Brien"
+  },
+  {
+   "value": "'q'",
+   "expected": "'''q'''"
+  },
+  {
+   "value": "\"dq\"",
+   "expected": "'\"dq\"'"
+  },
+  {
+   "value": "Müller",
+   "expected": "Müller"
+  },
+  {
+   "value": "trailing ",
+   "expected": "'trailing '"
+  },
+  {
+   "value": " leading",
+   "expected": "' leading'"
+  },
+  {
+   "value": "1.5",
+   "expected": "'1.5'"
+  },
+  {
+   "value": ".5",
+   "expected": "'.5'"
+  },
+  {
+   "value": "0x1F",
+   "expected": "'0x1F'"
+  },
+  {
+   "value": "2024-01-01",
+   "expected": "'2024-01-01'"
+  },
+  {
+   "value": "---x",
+   "expected": "'---x'"
+  },
+  {
+   "value": "...x",
+   "expected": "'...x'"
+  },
+  {
+   "value": "a\tb",
+   "expected": "\"a\\tb\""
+  },
+  {
+   "value": "~",
+   "expected": "'~'"
+  },
+  {
+   "value": "on",
+   "expected": "'on'"
+  },
+  {
+   "value": "Journal of Bibliotheca",
+   "expected": "Journal of Bibliotheca"
+  },
+  {
+   "value": "Proceedings of the 45th ICIS",
+   "expected": "Proceedings of the 45th ICIS"
+  },
+  {
+   "value": "?x",
+   "expected": "?x"
+  },
+  {
+   "value": ":x",
+   "expected": ":x"
+  },
+  {
+   "value": "@x",
+   "expected": "'@x'"
+  },
+  {
+   "value": "%x",
+   "expected": "'%x'"
+  },
+  {
+   "value": "!x",
+   "expected": "'!x'"
+  },
+  {
+   "value": "&x",
+   "expected": "'&x'"
+  },
+  {
+   "value": "|x",
+   "expected": "'|x'"
+  },
+  {
+   "value": ">x",
+   "expected": "'>x'"
+  },
+  {
+   "value": "x:",
+   "expected": "'x:'"
+  },
+  {
+   "value": "1_000",
+   "expected": "'1_000'"
+  },
+  {
+   "value": "+1",
+   "expected": "'+1'"
+  },
+  {
+   "value": "-1",
+   "expected": "'-1'"
+  },
+  {
+   "value": "07",
+   "expected": "'07'"
+  },
+  {
+   "value": "1:30",
+   "expected": "'1:30'"
+  },
+  {
+   "value": ".inf",
+   "expected": "'.inf'"
+  },
+  {
+   "value": ".NaN",
+   "expected": "'.NaN'"
+  },
+  {
+   "value": "a,b",
+   "expected": "a,b"
+  },
+  {
+   "value": "[x]",
+   "expected": "'[x]'"
+  },
+  {
+   "value": "x]",
+   "expected": "x]"
+  },
+  {
+   "value": "{a}",
+   "expected": "'{a}'"
+  },
+  {
+   "value": "=",
+   "expected": "'='"
+  },
+  {
+   "value": "<<",
+   "expected": "'<<'"
+  }
+ ],
+ "yaml_documents": [
+  {
+   "sort_keys": false,
+   "pairs": [
+    [
+     "name",
+     "My Dissertation"
+    ],
+    [
+     "cites",
+     [
+      "Jones2009_JAIS",
+      "SmithJones2025_MISQ"
+     ]
+    ]
+   ],
+   "expected": "name: My Dissertation\ncites:\n- Jones2009_JAIS\n- SmithJones2025_MISQ\n"
+  },
+  {
+   "sort_keys": false,
+   "pairs": [
+    [
+     "name",
+     "Empty"
+    ],
+    [
+     "cites",
+     []
+    ]
+   ],
+   "expected": "name: Empty\ncites: []\n"
+  },
+  {
+   "sort_keys": false,
+   "pairs": [
+    [
+     "name",
+     "Journal of Bibliotheca"
+    ],
+    [
+     "nickname",
+     "JBIB"
+    ],
+    [
+     "starred",
+     true
+    ],
+    [
+     "jflags",
+     [
+      "A*",
+      "FT50"
+     ]
+    ]
+   ],
+   "expected": "name: Journal of Bibliotheca\nnickname: JBIB\nstarred: true\njflags:\n- A*\n- FT50\n"
+  },
+  {
+   "sort_keys": true,
+   "pairs": [
+    [
+     "surname",
+     "Zuboff"
+    ],
+    [
+     "id",
+     "ZUBOFF_Shoshana"
+    ],
+    [
+     "starred",
+     false
+    ],
+    [
+     "given_names",
+     "Shoshana"
+    ]
+   ],
+   "expected": "given_names: Shoshana\nid: ZUBOFF_Shoshana\nstarred: false\nsurname: Zuboff\n"
+  },
+  {
+   "sort_keys": true,
+   "pairs": [
+    [
+     "pdf",
+     "S/Smith2025.pdf"
+    ],
+    [
+     "my_works",
+     [
+      "project1"
+     ]
+    ],
+    [
+     "epub",
+     "/abs/path/book.epub"
+    ]
+   ],
+   "expected": "epub: /abs/path/book.epub\nmy_works:\n- project1\npdf: S/Smith2025.pdf\n"
+  },
+  {
+   "sort_keys": true,
+   "pairs": [],
+   "expected": "{}\n"
+  }
+ ],
+ "markdown": [
+  {
+   "text": "---\npdf: S/Smith2025.pdf\nmy_works:\n- project1\n---\n# Notes\n\nBody text.\n",
+   "keys": [
+    "my_works",
+    "pdf"
+   ],
+   "strings": {
+    "pdf": "S/Smith2025.pdf"
+   },
+   "body": "# Notes\n\nBody text.\n"
+  },
+  {
+   "text": "No frontmatter at all.\n",
+   "keys": [],
+   "strings": {},
+   "body": "No frontmatter at all.\n"
+  },
+  {
+   "text": "---\n{}\n---\n",
+   "keys": [],
+   "strings": {},
+   "body": ""
+  },
+  {
+   "text": "---\nnot: [valid\n---\nbody survives\n",
+   "keys": [],
+   "strings": {},
+   "body": "body survives\n"
+  },
+  {
+   "text": "---\nepub: 'quoted.epub'\nstarred: true\n---\n\n",
+   "keys": [
+    "epub",
+    "starred"
+   ],
+   "strings": {
+    "epub": "quoted.epub"
+   },
+   "body": ""
+  }
+ ],
+ "disambiguation": {
+  "records": [
+   {
+    "bibliotheca_id": "Smith2025a",
+    "author": "Smith, John",
+    "year": "2025",
+    "title": "Zeta study"
+   },
+   {
+    "bibliotheca_id": "Smith2025b",
+    "author": "Smith, J.",
+    "year": "2025",
+    "title": "Alpha study"
+   },
+   {
+    "bibliotheca_id": "Smith2025c",
+    "author": "Smith, Jane and Jones, B.",
+    "year": "2025",
+    "title": "Other"
+   },
+   {
+    "bibliotheca_id": "Smith2024",
+    "author": "Smith, John",
+    "year": "2024",
+    "title": "Solo"
+   },
+   {
+    "bibliotheca_id": "NoYear1",
+    "author": "Anon",
+    "year": "",
+    "title": "A"
+   },
+   {
+    "bibliotheca_id": "NoYear2",
+    "author": "Anon",
+    "year": "",
+    "title": "B"
+   }
+  ],
+  "expected": {
+   "Smith2025b": "a",
+   "Smith2025a": "b"
+  },
+  "letters": {
+   "0": "a",
+   "1": "b",
+   "25": "z",
+   "26": "aa",
+   "27": "ab",
+   "51": "az",
+   "52": "ba",
+   "701": "zz",
+   "702": "aaa"
+  }
+ },
+ "misc": {
+  "count_labels": {
+   "0": "",
+   "1": "(1)",
+   "42": "(42)"
+  },
+  "order_jflags": {
+   "flags": [
+    "FT50",
+    "A*",
+    "ABDC-A",
+    "zeta",
+    "Alpha"
+   ],
+   "priority": {
+    "A*": 1,
+    "FT50": 0.5
+   },
+   "expected": [
+    "FT50",
+    "A*",
+    "ABDC-A",
+    "Alpha",
+    "zeta"
+   ]
+  },
+  "markup_to_plain": [
+   {
+    "input": "<i>Title</i> &amp; more",
+    "expected": "Title & more"
+   },
+   {
+    "input": "O&#x27;Brien &quot;q&quot; &lt;tag&gt;",
+    "expected": "O'Brien \"q\" <tag>"
+   },
+   {
+    "input": "&amp;lt;",
+    "expected": "<"
+   }
+  ],
+  "type_labels": [
+   {
+    "type": "article",
+    "booktitle": null,
+    "expected": "Journal article"
+   },
+   {
+    "type": "INPROCEEDINGS",
+    "booktitle": null,
+    "expected": "Proceedings"
+   },
+   {
+    "type": "incollection",
+    "booktitle": "{Proceedings of} X",
+    "expected": "Proceedings"
+   },
+   {
+    "type": "incollection",
+    "booktitle": "Handbook",
+    "expected": "Book chapter"
+   },
+   {
+    "type": "thesis",
+    "booktitle": null,
+    "expected": "Other"
+   },
+   {
+    "type": "",
+    "booktitle": null,
+    "expected": "Other"
+   },
+   {
+    "type": "Online",
+    "booktitle": null,
+    "expected": "Webpage"
+   }
+  ]
+ }
+}
